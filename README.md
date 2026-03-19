@@ -1,6 +1,6 @@
 # Rama: reprogramar-una-cita
 
-Este README resume lo realizado en la rama `creacion_de_citas`.
+Este README resume lo realizado en la rama `reprogramar-una-cita`.
 
 ## Cambios principales
 
