@@ -1,40 +1,52 @@
-# Diseño de la base de datos para el caso de creacion de citas
+# Diseño de la base de datos para el caso de reprogramar una cita
 
-## Appoiment
-cuando se crea la cita, se guarda en la Tabla Appoiment
+## Session types
+
+Tabla que almacena los tipos de sesión disponibles en el sistema, como seguimiento. Se utiliza para clasificar las citas y aplicar reglas de negocio según el tipo.
 
 ```sql
-CREATE TABLE appointments (
-	id BIGSERIAL PRIMARY KEY,
-	patient_id INT NOT NULL REFERENCES patients(id) ON DELETE RESTRICT,
-	therapist_id INT NOT NULL REFERENCES therapists(id) ON DELETE RESTRICT,
-	room_id INT NOT NULL REFERENCES rooms(id) ON DELETE RESTRICT,
-	start_at TIMESTAMP WITH TIME ZONE NOT NULL,
-	end_at TIMESTAMP WITH TIME ZONE NOT NULL,
-	duration_minutes INT NOT NULL,
-	status_id SMALLINT NOT NULL REFERENCES appointment_statuses(id),
-	created_by INT REFERENCES users(id),
-	created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-	updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-	cancelled_reason TEXT,
-	deleted_at TIMESTAMP WITH TIME ZONE NULL,
-	cacelled_reason TEXT,
-	payment_prof_path VARCHAR(500) --!url de la imagen del comprobante
+CREATE TABLE session_types (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
 );
 ```
 
-## patient
-cunado se crea una cita por primera vez se crea un paciente en la base de datos
+## Appointment statuses
+
+Tabla que define los diferentes estados que puede tener una cita, como activa, cancelada o reprogramada. Permite manejar el ciclo de vida de las citas sin eliminarlas físicamente.
 
 ```sql
-CREATE TABLE patients (
-  id SERIAL PRIMARY KEY,
-  folio VARCHAR(50) UNIQUE, 
-  full_name VARCHAR(255) NOT NULL,
-  phone VARCHAR(50),
-  email VARCHAR(255),
-  birth_date DATE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+CREATE TABLE appointment_statuses (
+    id SMALLSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+```
+
+## Appointment
+
+Tabla principal que almacena la información de las citas, incluyendo paciente, terapeuta, sala, horario y estado.
+
+```sql
+CREATE TABLE appointments (
+    id BIGSERIAL PRIMARY KEY,
+
+    patient_id INT NOT NULL REFERENCES patients(id) ON DELETE RESTRICT,
+    therapist_id INT NOT NULL REFERENCES therapists(id) ON DELETE RESTRICT,
+    room_id INT NOT NULL REFERENCES rooms(id) ON DELETE RESTRICT,
+
+    session_type_id INT NOT NULL REFERENCES session_types(id),
+
+    start_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    duration_minutes INT NOT NULL,
+
+    status_id SMALLINT NOT NULL REFERENCES appointment_statuses(id),
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+
+    parent_appointment_id BIGINT REFERENCES appointments(id),
+    reschedule_count INT DEFAULT 0,
+    reschedule_note TEXT
 );
 ```
