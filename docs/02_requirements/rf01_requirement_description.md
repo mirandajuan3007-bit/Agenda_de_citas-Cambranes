@@ -36,17 +36,15 @@ Una vez creada, la cita aparecerá automáticamente en la agenda del sistema.
 
 ## Relacion con otros requisitos
 
-- **RF-1 Consultar detalles de una cita:**
+- **RF-6 Consultar detalles de una cita:**
 si no se crea la cita, no se pueden ver los detalles de dicha cita.
-- **RF-2 Reprogramar una cita:**
+- **RF-8 Reprogramar una cita:**
 si no se crea la cita, no se puede reprogramar.
 - **RF-3 Validar disponibilidad:**
 al registrar una cita se valida la disponibilidad de horarios, terapeutas y salas.
-- **RF-4 Recordatorio automatico de citas:**
-al crear la cita, el sistema envia recordatorios antes del inicio.
-- **RF-5 Visualizacion de citas atrasadas:**
+- **RF-7 Visualizacion de citas atrasadas:**
 si el paciente no llega a tiempo, se muestra una alerta visual.
-- **RF-8 Guardar datos del paciente en el historial medico:**
+- **RF-5 Guardar datos del paciente en el historial medico:**
 al crear la primera cita, la informacion del paciente se guarda en el expediente.
 
 ## Lógica de negocio
