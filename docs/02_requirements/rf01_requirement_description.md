@@ -1,4 +1,4 @@
-# RF-7 Creacion de citas
+# RF-1 Creacion de citas
 
 ## Descripcion
 El sistema debe permitir a la secretaria registrar una nueva cita para un paciente dentro de la agenda. Durante la creacion, el sistema debe verificar que los recursos necesarios esten disponibles (paciente, terapeuta y sala) para evitar conflictos de horario. El sistema debe permitir dos tipos de registro: "Cita de terapia" o "Evaluacion inicial". Dependiendo del tipo, los pasos y la informacion requerida cambian ligeramente.
@@ -42,7 +42,7 @@ si no se crea la cita, no se pueden ver los detalles de dicha cita.
 si no se crea la cita, no se puede reprogramar.
 - **RF-3 Validar disponibilidad:**
 al registrar una cita se valida la disponibilidad de horarios, terapeutas y salas.
-- **RF-7 Visualizacion de citas atrasadas:**
+- **RF-7 Identificacion visual de citas atrasadas:**
 si el paciente no llega a tiempo, se muestra una alerta visual.
 - **RF-5 Guardar datos del paciente en el historial medico:**
 al crear la primera cita, la informacion del paciente se guarda en el expediente.
@@ -61,11 +61,13 @@ al crear la primera cita, la informacion del paciente se guarda en el expediente
 
 4️⃣ La hora de inicio debe ser menor que la hora de finalizacion.
 
-5️⃣ La cita debe crearse con estado: programado.
+5️⃣ La cita debe crearse con estado: programada.
 
 ## Como se veria en el frontend
 
-![Flujo del requisito](../frontend.png)
+![Diagrama de flujo del requisito](../03_modeling/rf01_flow_diagram.png)
+
+![Prototipo de interfaz](../../prototypes/rf01_frontend_prototype.png)
 
 
 

@@ -1,4 +1,4 @@
-# Módulo de Agenda (Develop)
+# Modulo de Agenda
 
 ## Descripción
 
@@ -26,6 +26,7 @@ Gestionar las citas de manera eficiente, evitando conflictos de horario y garant
 * No se permiten conflictos de horario entre terapeuta, sala o paciente
 * Las citas no se eliminan, solo cambian de estado
 * Cada terapeuta tiene una sala asignada
+* Las citas se gestionan en estados trazables: programada, cancelada, reprogramada y finalizada
 
 ## Alcance del módulo
 
@@ -35,8 +36,13 @@ Otros aspectos como pagos, evaluación socioeconómica o expedientes no forman p
 ## Documentación detallada
 
 La documentación completa del módulo se encuentra en:
-`/docs/02_requirements`
+* `/docs/01_problem_definition`
+* `/docs/02_requirements`
+* `/docs/03_modeling`
+* `/docs/04_design`
 
 ## Diagramas
 
-Los diagramas del sistema (UML, flujos, etc.) se encuentran en el repositorio dentro de la carpeta `/docs/03_modeling`
+Los diagramas del sistema (UML, flujos, etc.) se encuentran en el repositorio dentro de la carpeta `/docs/03_modeling`.
+
+Los prototipos de interfaz del modulo se encuentran en la carpeta `/prototypes`.

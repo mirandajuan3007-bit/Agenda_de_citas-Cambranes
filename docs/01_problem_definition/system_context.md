@@ -115,7 +115,7 @@ El módulo de agenda interactúa de manera lógica con otros componentes del sis
 ## 11. Reglas de Negocio Principales
 
 * **Trazabilidad:** Las citas registradas nunca se eliminan físicamente de la base de datos.
-* **Cancelaciones:** Al cancelar, únicamente se cambia el estado de la cita a "cancelada"
+* **Cancelaciones:** Al cancelar, únicamente se cambia el estado de la cita a "cancelada".
 * **Reagendamientos:** Al modificar un horario, la cita original se archiva y se genera una nueva cita con los cambios aplicados.
 * **Continuidad:** No existe tiempo de descanso obligatorio entre citas; una puede comenzar inmediatamente después de otra si hay disponibilidad.
 
@@ -123,7 +123,7 @@ El módulo de agenda interactúa de manera lógica con otros componentes del sis
 
 ## 12. Estados y Tipos de Sesión
 
-Las citas transitan por los siguientes estados: *Activa, Pendiente, Cancelada y Finalizada*.
+Las citas transitan por los siguientes estados: *Programada, Cancelada, Reprogramada y Finalizada*.
 Asimismo, se dividen en dos flujos principales:
 
 * **Evaluación inicial:** Para pacientes de primera vez. Requiere el registro de datos básicos y genera un folio único.
