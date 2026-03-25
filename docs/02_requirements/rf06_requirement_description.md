@@ -1,4 +1,4 @@
-# RF-1 Consultar detalles de una cita
+# RF-6 Consultar detalles de una cita
 
 ## Descripcion
 El sistema debe permitir al personal administrativo consultar la informacion detallada de una cita registrada dentro de la agenda. La consulta debe poder realizarse al seleccionar una cita desde el calendario o desde el listado de citas.
@@ -68,4 +68,6 @@ antes de cancelar una cita, el personal puede consultar sus detalles para confir
 El personal administrativo selecciona una cita desde el calendario o desde el listado de citas.  
 Despues, el sistema abre una ventana, tarjeta o vista de detalles donde se muestra la informacion completa de la cita seleccionada.
 
-![Flujo del requisito](../consultar-cita.png)
+![Diagrama de flujo del requisito](../03_modeling/rf06_flow_diagram.png)
+
+![Prototipo de interfaz](../../prototypes/rf06_frontend_consultar_citas.jpg)
