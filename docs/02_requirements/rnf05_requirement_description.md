@@ -1,4 +1,4 @@
-# Entregable RNF-05: Usabilidad y diseño coherente
+# Entregable RNF-07: Usabilidad y diseño coherente
 
 ## 1. Propósito del documento
 Este documento describe cómo se interpretará, diseñará y verificará el requisito no funcional **Usabilidad y diseño coherente** para el módulo de citas. Su propósito es convertir el issue del backlog en un entregable concreto y revisable dentro del repositorio.
