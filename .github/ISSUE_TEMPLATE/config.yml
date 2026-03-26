@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Guia de trabajo del equipo
+    url: https://github.com/mirandajuan3007-bit/Agenda_de_citas-Cambranes/blob/develop/CONTRIBUTING.md
+    about: Revise la guia del repositorio antes de crear una issue.

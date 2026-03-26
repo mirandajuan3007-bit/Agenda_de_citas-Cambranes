@@ -1,0 +1,13 @@
+# Reviewer principal por defecto para garantizar una sola revision formal.
+# Ajusten estos usuarios si cambian los roles del equipo.
+
+* @cesardzul-byte
+
+/docs/01_problem_definition/ @mirandajuan3007-bit
+/docs/02_requirements/ @mirandajuan3007-bit
+/docs/03_modeling/ @mirandajuan3007-bit
+/docs/04_design/ @mirandajuan3007-bit
+/prototypes/ @mirandajuan3007-bit
+/logs/ @mirandajuan3007-bit
+/scripts/ @mirandajuan3007-bit
+/.github/ @mirandajuan3007-bit

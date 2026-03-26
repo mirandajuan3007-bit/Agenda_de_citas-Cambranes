@@ -1,0 +1,87 @@
+name: Documentation Quality
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Python scripts syntax
+        run: |
+          python -m py_compile \
+            scripts/generate_weekly_report.py \
+            scripts/generate_project_status.py \
+            scripts/validate_repo_structure.py
+
+      - name: Generate repository structure report
+        id: structure_report
+        continue-on-error: true
+        run: |
+          mkdir -p logs
+          python scripts/validate_repo_structure.py --output logs/repo_structure_validation_ci.md
+
+      - name: Publish validation summary
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          report = Path("logs/repo_structure_validation_ci.md")
+          summary = Path("$GITHUB_STEP_SUMMARY")
+
+          if not report.exists():
+              summary.write_text("## Resultado de validacion\n\nNo se pudo generar el reporte de estructura.\n", encoding="utf-8")
+              raise SystemExit(0)
+
+          text = report.read_text(encoding="utf-8")
+
+          def extract(label: str) -> str:
+              match = re.search(rf"\| {re.escape(label)} \| (\d+) \|", text)
+              return match.group(1) if match else "0"
+
+          errors = extract("Errores")
+          warnings = extract("Warnings")
+          info = extract("Info")
+
+          summary.write_text(
+              "## Resultado de validacion\n\n"
+              f"- Errores detectados: {errors}\n"
+              f"- Warnings detectados: {warnings}\n"
+              f"- Info detectados: {info}\n\n"
+              "Este pipeline es informativo: publica el estado de la documentacion y de la estructura del repo,\n"
+              "pero no bloquea el merge mientras el proyecto siga corrigiendo deuda historica.\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-quality-artifacts
+          path: |
+            logs/repo_structure_validation_ci.md
+          if-no-files-found: warn
