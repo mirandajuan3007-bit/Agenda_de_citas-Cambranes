@@ -46,3 +46,14 @@ La documentación completa del módulo se encuentra en:
 Los diagramas del sistema (UML, flujos, etc.) se encuentran en el repositorio dentro de la carpeta `/docs/03_modeling`.
 
 Los prototipos de interfaz del modulo se encuentran en la carpeta `/prototypes`.
+
+## Automatizacion
+
+El repositorio cuenta con un workflow de GitHub Actions en `.github/workflows/documentation-quality.yml`.
+
+Este pipeline revisa automaticamente dos cosas en cada push o pull request hacia `develop` y `main`:
+
+* sintaxis de los scripts Python del repositorio
+* estructura documental del proyecto mediante `scripts/validate_repo_structure.py`
+
+El workflow genera un reporte como artefacto para apoyar la revision del equipo. Actualmente funciona como validacion informativa, no como bloqueo estricto, para permitir corregir gradualmente la deuda documental existente.

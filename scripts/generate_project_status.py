@@ -20,6 +20,11 @@ from generate_weekly_report import (
 )
 
 
+PROJECT_WEIGHT_STRICT = 0.50
+PROJECT_WEIGHT_DOCUMENTATION = 0.30
+PROJECT_WEIGHT_MANAGEMENT = 0.20
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Genera un tablero ligero de estado del proyecto en Markdown."
@@ -115,9 +120,71 @@ def build_closed_recent_rows(issues: list[dict], days: int) -> list[list[str]]:
     return rows
 
 
+def parse_github_date(value: str | None) -> dt.datetime | None:
+    if not value:
+        return None
+    return dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def ratio(part: int, total: int) -> float:
+    if total <= 0:
+        return 0.0
+    return part / total
+
+
+def format_percent(value: float) -> str:
+    return f"{value * 100:.1f}%"
+
+
+def build_project_percentage_summary(progress: dict[str, object], rf_complete_count: int) -> dict[str, float]:
+    rf_total = int(progress["rf_total"])
+    total_issues = int(progress["total_issues"])
+
+    strict_progress = ratio(rf_complete_count, rf_total)
+    documentation_progress = ratio(int(progress["rf_with_requirements"]), rf_total)
+    management_progress = ratio(int(progress["closed_issues"]), total_issues)
+    overall_progress = (
+        strict_progress * PROJECT_WEIGHT_STRICT
+        + documentation_progress * PROJECT_WEIGHT_DOCUMENTATION
+        + management_progress * PROJECT_WEIGHT_MANAGEMENT
+    )
+
+    return {
+        "strict_progress": strict_progress,
+        "documentation_progress": documentation_progress,
+        "management_progress": management_progress,
+        "overall_progress": overall_progress,
+    }
+
+
+def build_unassigned_overdue_rows(issues: list[dict]) -> list[list[str]]:
+    now_utc = dt.datetime.now(dt.timezone.utc)
+    rows: list[list[str]] = []
+    for issue in issues:
+        if issue.get("state", "").lower() != "open" or issue.get("assignees"):
+            continue
+        created_at = parse_github_date(issue.get("created_at"))
+        if not created_at:
+            continue
+        age = now_utc - created_at
+        if age < dt.timedelta(hours=24):
+            continue
+        age_hours = int(age.total_seconds() // 3600)
+        rows.append(
+            [
+                f"#{issue['number']}",
+                issue["title"],
+                f"{age_hours} h",
+            ]
+        )
+
+    rows.sort(key=lambda item: int(item[2].split()[0]), reverse=True)
+    return rows
+
+
 def render_status_report(branch: str, repo_slug: str | None, issues: list[dict], issue_error: str | None, days: int) -> str:
     generated_at = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    local_artifacts = collect_local_artifacts()
+    local_artifacts = collect_local_artifacts(branch)
     rf_matrix = build_rf_matrix(issues, local_artifacts)
     progress = compute_progress(issues, local_artifacts, rf_matrix)
     observations = project_observations([], rf_matrix, issues, issue_error)
@@ -127,11 +194,13 @@ def render_status_report(branch: str, repo_slug: str | None, issues: list[dict],
     rnf_pending_rows = build_rnf_pending_rows(issues)
     open_issues_by_assignee_rows = group_open_issues_by_assignee(issues)
     closed_recent_rows = build_closed_recent_rows(issues, days)
+    unassigned_overdue_rows = build_unassigned_overdue_rows(issues)
     unassigned_open = sum(
         1
         for issue in issues
         if issue.get("state", "").lower() == "open" and not issue.get("assignees")
     )
+    project_percentage = build_project_percentage_summary(progress, len(rf_complete_rows))
 
     lines = [
         "# Tablero de avance del proyecto",
@@ -149,8 +218,43 @@ def render_status_report(branch: str, repo_slug: str | None, issues: list[dict],
         f"- RNF pendientes: {len(rnf_pending_rows)}",
         f"- Issues abiertas totales: {progress['open_issues']}",
         f"- Issues abiertas sin asignado: {unassigned_open}",
+        f"- Porcentaje oficial recomendado del proyecto: {format_percent(project_percentage['overall_progress'])}",
         "",
         "**Criterio de RF completo:** issue cerrada + documento en docs/02_requirements + diagrama en docs/03_modeling + diseño en docs/04_design.",
+        "",
+        "## Porcentaje del proyecto",
+        "",
+        "El avance general del proyecto se presenta con tres indicadores base y un porcentaje oficial recomendado para fase de diseño.",
+        "",
+        render_table(
+            ["Indicador", "Formula", "Valor actual", "Lectura"],
+            [
+                [
+                    "Avance funcional estricto",
+                    "RF completos / RF totales",
+                    format_percent(project_percentage["strict_progress"]),
+                    "Mide entregables funcionales cerrados con documento, diagrama y diseño.",
+                ],
+                [
+                    "Cobertura documental RF",
+                    "RF con documento / RF totales",
+                    format_percent(project_percentage["documentation_progress"]),
+                    "Mide qué tanto del alcance funcional ya está documentado en el repo.",
+                ],
+                [
+                    "Avance de gestion",
+                    "Issues cerradas / Issues totales",
+                    format_percent(project_percentage["management_progress"]),
+                    "Mide cierre real del backlog del proyecto.",
+                ],
+                [
+                    "Porcentaje oficial recomendado",
+                    "50% estricto + 30% documental + 20% gestion",
+                    format_percent(project_percentage["overall_progress"]),
+                    "Porcentaje unico sugerido para reportar al profesor sin perder contexto.",
+                ],
+            ],
+        ),
         "",
         "## RF completos",
         "",
@@ -180,6 +284,15 @@ def render_status_report(branch: str, repo_slug: str | None, issues: list[dict],
             open_issues_by_assignee_rows or [["-", "0", "No hay issues abiertas"]],
         ),
         "",
+        "## Control de asignacion",
+        "",
+        "**Regla del equipo:** ninguna issue puede quedar sin asignado por mas de 24 horas desde su creacion.",
+        "",
+        render_table(
+            ["Issue", "Titulo", "Tiempo sin asignado"],
+            unassigned_overdue_rows or [["-", "No hay issues abiertas sin asignado vencidas", "-"]],
+        ),
+        "",
         f"## Tareas cerradas en los ultimos {days} dias",
         "",
         render_table(
@@ -194,9 +307,9 @@ def render_status_report(branch: str, repo_slug: str | None, issues: list[dict],
         "## Sugerencias inmediatas",
         "",
         "- Priorizar RF pendientes que ya tienen issue abierta pero no tienen documento en docs/02_requirements.",
-        "- Asignar responsable a las issues abiertas que aparecen como 'Sin asignado'.",
+        "- Resolver el incumplimiento de asignacion: ninguna issue debe permanecer sin responsable mas de 24 horas.",
         "- Completar diseño para RF cerrados que aun no tienen archivo en docs/04_design.",
-        "- Usar este tablero como vista rapida del estado del proyecto antes de las reuniones del equipo.",
+        "- Reportar al profesor el porcentaje oficial recomendado junto con los tres indicadores base para evitar ambiguedades.",
     ]
     return "\n".join(lines) + "\n"
 

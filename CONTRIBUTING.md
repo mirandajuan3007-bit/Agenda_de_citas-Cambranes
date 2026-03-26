@@ -150,6 +150,17 @@ Una tarea solo pasa a `In Progress` cuando cumple estas condiciones:
 - la rama ya fue creada
 - ya se sabe en que carpeta del repo se entregara el trabajo
 
+## Regla de asignacion obligatoria
+
+Ninguna issue puede quedar sin asignado por mas de 24 horas desde su creacion.
+
+Aplicacion practica:
+
+- si una issue se crea y aun no tiene responsable, debe asignarse dentro de las siguientes 24 horas
+- si nadie la puede tomar todavia, debe marcarse explicitamente en backlog y discutirse en la siguiente revision del equipo
+- una issue sin responsable no debe pasar a `To Do` ni a `In Progress`
+- el tablero y el reporte de estado del proyecto deben mostrar estas issues como incumplimiento de gestion
+
 ## Uso del board
 
 El board debe reflejar el estado real del trabajo. No se usa como decoracion.
@@ -188,6 +199,7 @@ Cada PR debe:
 - salir de una rama de tarea
 - apuntar a `develop`
 - estar vinculado a una issue
+- usar la plantilla oficial del repositorio
 - tener descripcion clara
 - tener un solo reviewer principal
 - cumplir los criterios de aceptacion antes de pedirse revision
@@ -209,6 +221,50 @@ Se abre un PR solo cuando:
 - el cambio esta listo para ser validado por otra persona
 
 En este proyecto, abrir PR sin diagrama, sin ruta correcta o sin coherencia con los demas RF se considera trabajo incompleto.
+
+## Plantillas obligatorias del repositorio
+
+Para que el trabajo sea trazable y revisable, el repositorio incluye estos artefactos de apoyo:
+
+- `.github/pull_request_template.md`
+- `.github/ISSUE_TEMPLATE/functional-requirement.md`
+- `.github/ISSUE_TEMPLATE/non-functional-requirement.md`
+- `.github/ISSUE_TEMPLATE/documentation-task.md`
+- `.github/CODEOWNERS`
+- `docs/README.md`
+
+Reglas de uso:
+
+- toda issue nueva debe crearse con una plantilla adecuada
+- todo PR nuevo debe completar la plantilla del repositorio
+- el reviewer principal debe quedar definido en la issue o en el PR
+- si una tarea no encaja en ninguna plantilla, primero debe aclararse antes de iniciarse
+
+## Proteccion recomendada de ramas en GitHub
+
+Ademas de las reglas escritas en el repo, este proyecto debe configurar proteccion de ramas directamente en GitHub.
+
+### Para `main`
+
+- bloquear pushes directos
+- permitir cambios solo por PR
+- requerir al menos 1 aprobacion
+- requerir que las conversaciones esten resueltas antes de merge
+- requerir estado exitoso del workflow de calidad documental
+
+### Para `develop`
+
+- bloquear pushes directos del equipo cuando sea posible
+- permitir cambios por PR
+- requerir al menos 1 aprobacion
+- requerir que el PR este vinculado a una issue
+- requerir estado exitoso del workflow de calidad documental cuando el repo ya este mas estable
+
+### Criterio practico
+
+`main` debe ser la rama mas protegida.
+
+`develop` puede ser un poco mas flexible al inicio, pero no debe convertirse en una rama donde cualquiera sube trabajo sin revision.
 
 ## Quien revisa
 
