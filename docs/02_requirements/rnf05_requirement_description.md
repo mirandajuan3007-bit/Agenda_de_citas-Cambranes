@@ -1,4 +1,4 @@
-# RNF - 06. Minimización de exposición de datos
+# RNF - 05. Minimización de exposición de datos
 
 ## Objetivo del requisito
 
