@@ -1,176 +1,184 @@
-# RNF - 06. Minimización de exposición de datos
+# Entregable RNF-06: Usabilidad y diseño coherente
 
-## Objetivo del requisito
+## 1. Propósito del documento
+Este documento describe cómo se interpretará, diseñará y verificará el requisito no funcional **Usabilidad y diseño coherente** para el módulo de citas. Su propósito es convertir el issue del backlog en un entregable concreto y revisable dentro del repositorio.
 
-El sistema debe mostrar únicamente la información mínima necesaria para gestionar citas dentro del módulo de agenda, evitando la exposición innecesaria de datos personales o sensibles del paciente en las vistas administrativas.
+Este archivo no sustituye al issue del backlog. El issue define **qué se espera**; este documento define **cómo se representará, qué elementos deberá incluir la solución y cómo se verificará su cumplimiento**.
 
-Este requisito busca que la secretaria y el administrador puedan operar la agenda de forma eficiente, pero con distintos niveles de visualización según su función. La secretaria debe ver únicamente la información mínima indispensable para registrar y gestionar la cita, mientras que el administrador puede acceder a un mayor nivel de detalle cuando el seguimiento operativo del sistema lo requiera.
+---
 
-## Justificación
+## 2. Relación con el backlog
+**Issue asociado:** RNF – Usabilidad y diseño coherente
 
-El módulo de agenda pertenece a un sistema para una clínica psicológica y, por lo tanto, trabaja con información de pacientes que debe tratarse con cuidado. Aunque este módulo requiere algunos datos básicos para identificar a la persona y administrar su cita, no forma parte de su alcance mostrar historial clínico detallado ni información sensible que no esté relacionada directamente con la operación administrativa.
+**Objetivo del RNF:**
+Garantizar que el módulo de citas ofrezca una experiencia de uso clara, consistente y comprensible para el personal de secretaría o coordinación, permitiendo crear, consultar y reprogramar citas sin confusión ni dependencia del equipo de desarrollo.
 
-Minimizar la exposición de datos ayuda a:
+---
 
-- reducir el riesgo de visualización innecesaria de información personal
-- mantener la interfaz enfocada en la gestión de citas
-- respetar el alcance del módulo de agenda dentro del sistema
-- mejorar la claridad operativa al mostrar solo la información relevante en cada vista
+## 3. Alcance del entregable
+Para considerar atendido este RNF, el equipo deberá producir o mejorar los siguientes elementos del módulo de citas:
 
-## Alcance del requisito
+- Flujo para **crear citas**.
+- Flujo para **consultar/ver citas**.
+- Flujo para **reprogramar citas**.
+- Formularios relacionados con el registro y edición de citas.
+- Botones, mensajes, campos y estilos compartidos entre pantallas.
+- Reglas visuales mínimas documentadas en una guía de estilo.
+- Evidencia de verificación del comportamiento en escritorio.
 
-Este requisito aplica a las principales vistas del módulo de agenda:
+---
 
-- agenda general o calendario de citas
-- listado de citas
-- detalle de una cita
-- formularios de creación o consulta relacionados con la cita
+## 4. Representación del RNF en el proyecto
+A diferencia de un requisito funcional, este RNF no se representa únicamente con un UML o una historia de flujo. Su cumplimiento se demuestra con una combinación de los siguientes artefactos:
 
-No aplica a módulos ajenos a la agenda ni autoriza la visualización de historial clínico detallado, expedientes completos u otra información fuera del alcance administrativo definido en el sistema.
+### 4.1 Artefactos mínimos esperados
+- Mockups, wireframes o capturas de las vistas principales del módulo.
+- Descripción textual del flujo de crear, consultar y reprogramar citas.
+- Reglas de diseño visual aplicables al módulo.
+- Checklist de verificación del RNF.
+- Evidencia de revisión en escritorio.
 
-Dentro del alcance actual del módulo, este requisito distingue la visualización por actor:
+## 5. Diseño esperado del módulo de citas
 
-- **Secretaria:** solo puede ver la información mínima indispensable para crear, identificar y gestionar correctamente una cita.
-- **administrador:** puede consultar información adicional de seguimiento, incluyendo el historial clinico del paciente cuando la operación administrativa lo requiera, siempre que dicha visualización no convierta la agenda en un expediente clínico completo.
+### 5.1 Flujo general esperado
+El módulo de citas debe permitir que una secretaria o coordinador pueda realizar tareas principales sin capacitación técnica especializada.
 
-## Medición y verificación
+El flujo esperado contempla tres procesos principales:
 
-La medición del requisito se realiza mediante un escenario de calidad para evitar interpretaciones ambiguas.
+#### Crear cita
+1. Acceder al módulo de citas.
+2. Seleccionar la opción **Crear cita**.
+3. Completar el formulario con campos organizados en orden lógico.
+4. Confirmar la información.
+5. Visualizar mensaje de éxito o corrección de errores.
 
-**Contexto:**
-La secretaria accede a la vista general de la agenda o al detalle de una cita registrada.
+#### Consultar cita
+1. Acceder al listado o buscador de citas.
+2. Identificar la cita deseada.
+3. Visualizar sus datos principales de forma clara.
+4. Acceder a acciones disponibles, como editar o reprogramar.
 
-**Estímulo:**
-El usuario consulta la información visible de una cita dentro del módulo de agenda.
+#### Reprogramar cita
+1. Ubicar la cita existente.
+2. Seleccionar la acción **Reprogramar**.
+3. Modificar fecha, hora u otros datos permitidos.
+4. Confirmar el cambio.
+5. Visualizar mensaje de confirmación.
 
-**Respuesta esperada:**
-El sistema muestra únicamente los datos permitidos para esa vista y para el actor que la consulta. En el caso de la secretaria, solo se presentan los datos mínimos necesarios para operar la cita. En el caso del administrador, puede mostrarse información adicional de seguimiento, incluyendo historial del paciente cuando corresponda a sus funciones, sin exponer información clínica detallada innecesaria dentro de la agenda.
+---
 
-**Métrica:**
+## 6. Reglas de usabilidad que debe cumplir la solución
 
-- número de campos visibles por vista menor o igual al número de campos definidos como permitidos para esa vista
-- cero campos sensibles no autorizados visibles en la agenda general
-- cero datos clínicos detallados visibles dentro del módulo de agenda
+### 6.1 Claridad del flujo
+- Las acciones principales deben estar visibles.
+- El usuario debe saber en qué parte del proceso se encuentra.
+- No deben existir pasos redundantes para completar tareas frecuentes.
+- Las rutas para crear, consultar y reprogramar deben ser fáciles de entender.
 
-## Traducción del requisito en el sistema
+### 6.2 Organización de formularios
+- Los campos deben agruparse por bloques relacionados.
+- El orden de captura debe seguir una secuencia natural.
+- Las etiquetas deben ser claras y directas.
+- Solo deben mostrarse campos necesarios para la tarea.
 
-Este requisito se traduce en reglas de presentación y visualización dentro del sistema.
+### 6.3 Consistencia visual
+- Los botones equivalentes deben compartir estilo.
+- Los mensajes del sistema deben conservar un patrón visual uniforme.
+- Inputs, títulos, espaciados y tipografías deben verse consistentes entre vistas.
+- No deben existir cambios de estilo sin justificación funcional.
 
-- **Agenda general:** la vista principal de la agenda debe mostrar solo información resumida para identificar y localizar la cita rápidamente.
-- **Listado de citas:** debe presentar datos administrativos mínimos que permitan distinguir una cita de otra sin exponer información adicional del paciente.
-- **Detalle de la cita:** puede mostrar más contexto que la agenda general, pero únicamente información necesaria para gestionar la cita desde el módulo administrativo.
-- **Formulario de creación o registro:** solo debe solicitar y mostrar los campos estrictamente necesarios para registrar la cita de acuerdo con el flujo correspondiente.
+### 6.4 Mensajes y validaciones
+- Los errores deben indicar qué ocurrió y cómo corregirlo.
+- Las confirmaciones deben ser claras.
+- Debe evitarse lenguaje técnico innecesario.
+- Los mensajes deben ser comprensibles para personal administrativo.
 
-## Datos permitidos y no permitidos
+### 6.5 Uso en escritorio
+- La interfaz debe verse correctamente en resolución de escritorio.
+- El contenido no debe romperse al aplicar zoom.
+- Botones, formularios y mensajes deben permanecer visibles y utilizables.
 
-### Agenda general
+---
 
-**Sí puede mostrar:**
+## 7. Guía de estilo mínima requerida
+Como parte del cumplimiento de este RNF, deberá existir una guía de estilo mínima del módulo de citas con al menos los siguientes elementos:
 
-- nombre del paciente
-- nombre del terapeuta
-- hora de la cita
-- sala asignada
-- estado de la cita
+- Colores principales y secundarios.
+- Tipografías y jerarquía de textos.
+- Espaciados entre secciones y componentes.
+- Estilo de botones principales, secundarios y de peligro.
+- Estilo de inputs, selects y áreas de validación.
+- Estilo de mensajes de error, advertencia, información y éxito.
 
-**No debe mostrar:**
+---
 
-- dirección del paciente
-- CURP
-- historial clínico detallado
-- notas sensibles del paciente
-- información ajena a la operación de la cita
+## 8. Escenario de calidad del RNF
 
-### Detalle de la cita
+### Contexto
+Una persona de secretaría utiliza el módulo de citas desde una computadora de escritorio.
 
-**Sí puede mostrar:**
+### Estímulo
+Necesita crear, consultar o reprogramar una cita por primera vez, sin apoyo del desarrollador.
 
-- nombre del paciente
-- fecha y hora de inicio
-- duración
-- terapeuta asignado
-- sala asignada
-- tipo de sesión
-- estado de la cita
-- comentarios administrativos relacionados con la gestión de la cita
+### Respuesta esperada
+La persona logra completar la tarea con una interfaz clara, navegación entendible, formularios organizados, mensajes comprensibles y consistencia visual entre pantallas.
 
-**No debe mostrar:**
+---
 
-- historial clínico detallado
-- información clínica no necesaria para la agenda
-- datos personales no relacionados con la operación administrativa de la cita
+## 9. Evidencia que debe adjuntarse
+Para considerar este RNF como atendido, se recomienda adjuntar evidencia como la siguiente:
 
-**Diferencia por actor en esta vista:**
+- Captura del flujo de crear cita.
+- Captura del flujo de consultar cita.
+- Captura del flujo de reprogramar cita.
+- Captura de formularios con campos organizados.
+- Captura de mensajes de validación o confirmación.
+- Captura o enlace a la guía de estilo.
+- Observaciones de prueba en escritorio y con zoom.
 
-- la secretaria visualiza únicamente la información mínima para identificar y operar la cita
-- el administrador puede acceder al historial del paciente cuando su función de seguimiento lo requiera
+---
 
-### Formulario de creación o registro
+## 10. Criterios de verificación del entregable
 
-**Sí puede mostrar o solicitar:**
+### 10.1 Verificación funcional de experiencia de uso
+- [ ] Existe un flujo identificable para crear citas.
+- [ ] Existe un flujo identificable para consultar citas.
+- [ ] Existe un flujo identificable para reprogramar citas.
+- [ ] Un usuario nuevo puede entender las acciones principales sin ayuda técnica.
 
-- tipo de cita
-- nombre del paciente cuando aplique
-- terapeuta
-- fecha
-- hora de inicio
-- duración
-- sala
-- comentarios administrativos
+### 10.2 Verificación visual
+- [ ] Los botones equivalentes tienen el mismo estilo.
+- [ ] Los formularios mantienen estructura y espaciado uniforme.
+- [ ] Los mensajes del sistema siguen un patrón visual consistente.
 
-**No debe mostrar o solicitar innecesariamente:**
+### 10.3 Verificación de formularios
+- [ ] Los campos están agrupados lógicamente.
+- [ ] Las etiquetas son claras.
+- [ ] No existen campos innecesarios.
+- [ ] Los errores explican cómo corregir el problema.
 
-- información clínica detallada
-- datos no utilizados por el flujo de agenda
-- campos personales que no sean necesarios para identificar y registrar la cita
+### 10.4 Verificación de escritorio
+- [ ] La interfaz es usable en escritorio.
+- [ ] La interfaz conserva legibilidad con zoom.
+- [ ] No existen traslapes o recortes que impidan usar el módulo.
 
-**Nota:** La minimización de exposición no impide capturar datos básicos del paciente cuando el tipo de cita lo requiere, pero limita la visualización y solicitud de información a lo estrictamente necesario para completar el flujo administrativo.
+### 10.5 Verificación documental
+- [ ] Existe una guía de estilo mínima en el repositorio.
+- [ ] Existe evidencia de revisión del RNF.
+- [ ] El contenido entregado es consistente con el issue del backlog.
 
-## Relación con otros requisitos
+---
 
-- **RF-01 Creación de citas:** este RNF influye en la información que el formulario debe mostrar o solicitar al momento de registrar una cita.
-- **RF-05 Guardar datos del paciente e historial de citas:** este RNF limita qué parte de la información almacenada del paciente puede visualizarse dentro del módulo de agenda.
-- **RF-06 Consultar detalles de una cita:** la consulta de detalle debe respetar la regla de mostrar solo los datos administrativos necesarios.
-- **RF-07 Identificación visual de citas atrasadas:** la agenda puede resaltar citas que requieren atención, pero sin exponer información adicional no necesaria para esa vista.
+## 11. Resultado esperado al cerrar el issue
+El issue **Usabilidad y diseño coherente** podrá considerarse atendido cuando el repositorio contenga evidencia suficiente de que:
 
-## Criterios de cumplimiento
+1. El módulo de citas presenta flujos claros para crear, consultar y reprogramar.
+2. Los formularios son comprensibles y están organizados.
+3. La interfaz mantiene consistencia visual.
+4. La solución funciona adecuadamente en escritorio.
+5. Existe una guía de estilo mínima que documenta la uniformidad del módulo.
 
-Se considera que este requisito se cumple cuando:
+---
 
-- la agenda general muestra únicamente datos resumidos y relevantes de cada cita
-- la vista de detalle no expone historial clínico detallado ni información sensible innecesaria
-- los formularios solicitan únicamente los campos necesarios para gestionar la cita
-- la secretaria no puede visualizar más información de la necesaria para registrar y administrar la cita
-- el administrador solo accede a información adicional cuando su función de seguimiento lo justifica
-- cada vista del módulo respeta una lista clara de datos permitidos y no permitidos
-- la evidencia visual del repo permite verificar que la información visible es consistente con este requisito
-
-## Evidencia de cumplimiento
-
-Las siguientes referencias visuales pueden utilizarse como evidencia de que la interfaz del módulo debe limitar la información visible según la vista y según el actor que consulta la información. Aunque estas imágenes provienen de prototipos asociados a otros flujos del módulo, sirven como respaldo visual del criterio de exposición mínima dentro de la agenda.
-
-| Evidencia | Qué respalda dentro del RNF-06 |
-| --- | --- |
-| Detalle de la cita | Permite verificar que la vista de detalle muestra información administrativa de la cita y no un expediente clínico completo. |
-| Agenda general | Permite verificar que la agenda muestra información resumida para localizar citas rápidamente sin exponer datos sensibles. |
-| Formulario o captura de la cita | Permite verificar que la captura de datos se concentra en los campos necesarios para registrar la cita. |
-
-### Detalle de la cita
-
-La vista de detalle debe mostrar información administrativa de la cita. En la visualización de la secretaria esto implica datos mínimos de gestión; en la del administrador puede existir mayor profundidad de consulta cuando sea necesaria para seguimiento, sin convertir esta vista en un expediente clínico completo.
-
-![Detalle de la cita](../../prototypes/rf06_frontend_consultar_citas.jpg)
-
-### Agenda general
-
-La agenda general debe permitir localizar citas rápidamente con información resumida y operativa. Esta evidencia respalda especialmente la restricción de visualización mínima para la secretaria.
-
-![Agenda general](../../prototypes/rf07_flow_diagram.png)
-
-### Formulario o captura de la cita
-
-La captura de información debe concentrarse en los datos mínimos necesarios para registrar o continuar el flujo de agenda. Esto respalda que la creación de la cita no solicite información ajena al flujo administrativo activo.
-
-![Formulario de captura relacionado con la cita](../../prototypes/rf01_frontend_prototype.png)
-
-
+## 12. Observación final
+Este documento funciona como **entregable base** del RNF. A partir de él, el equipo puede agregar implementación, mockups, capturas, componentes o mejoras visuales. Su objetivo es dejar claro **qué debe existir en el proyecto para demostrar que el RNF fue trabajado**, aunque no se represente con un único diagrama UML como sucede en muchos requisitos funcionales.

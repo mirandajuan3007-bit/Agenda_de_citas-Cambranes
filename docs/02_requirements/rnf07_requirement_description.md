@@ -1,184 +1,87 @@
-# Entregable RNF-07: Usabilidad y diseño coherente
+# RNF-07 — Flujo Simplificado y Onboarding Operativo
 
-## 1. Propósito del documento
-Este documento describe cómo se interpretará, diseñará y verificará el requisito no funcional **Usabilidad y diseño coherente** para el módulo de citas. Su propósito es convertir el issue del backlog en un entregable concreto y revisable dentro del repositorio.
+## Descripción del requisito
 
-Este archivo no sustituye al issue del backlog. El issue define **qué se espera**; este documento define **cómo se representará, qué elementos deberá incluir la solución y cómo se verificará su cumplimiento**.
+El sistema garantizará que las tareas frecuentes del módulo de agenda: crear, consultar y reprogramar citas puedan completarse siguiendo un flujo continuo, predecible y sin pasos redundantes. La navegación entre vistas será consistente y el usuario siempre tendrá claro cómo avanzar, regresar o cancelar una acción sin perder el contexto de su tarea.
 
----
-
-## 2. Relación con el backlog
-**Issue asociado:** RNF – Usabilidad y diseño coherente
-
-**Objetivo del RNF:**
-Garantizar que el módulo de citas ofrezca una experiencia de uso clara, consistente y comprensible para el personal de secretaría o coordinación, permitiendo crear, consultar y reprogramar citas sin confusión ni dependencia del equipo de desarrollo.
+Este requisito aplica exclusivamente al personal administrativo (secretaria y coordinador) que opera el módulo desde entorno de escritorio.
 
 ---
 
-## 3. Alcance del entregable
-Para considerar atendido este RNF, el equipo deberá producir o mejorar los siguientes elementos del módulo de citas:
+## Justificación
 
-- Flujo para **crear citas**.
-- Flujo para **consultar/ver citas**.
-- Flujo para **reprogramar citas**.
-- Formularios relacionados con el registro y edición de citas.
-- Botones, mensajes, campos y estilos compartidos entre pantallas.
-- Reglas visuales mínimas documentadas en una guía de estilo.
-- Evidencia de verificación del comportamiento en escritorio.
+Un flujo simplificado y autoexplicativo acelera la curva de aprendizaje, el personal administrativo llega a productividad más rápido y con menos supervisión. En el contexto de la clínica esto se traduce en menos tiempo dedicado a tareas administrativas y más tiempo para la atención directa o la gestión de la agenda.
 
----
+- Un flujo con persistencia de datos al retroceder y confirmaciones claras reduce pérdidas parciales y entradas duplicadas.
+- Si una secretaria nueva puede completar tareas críticas en su primer intento siguiendo la interfaz, la organización reduce horas de capacitación y consultas a TI. El resultado es menor coste operativo y mayor escalabilidad del servicio administrativo.
+- Contar pasos medibles y reglas de persistencia permite auditar procesos, reproducir errores y garantizar integridad de datos
 
-## 4. Representación del RNF en el proyecto
-A diferencia de un requisito funcional, este RNF no se representa únicamente con un UML o una historia de flujo. Su cumplimiento se demuestra con una combinación de los siguientes artefactos:
-
-### 4.1 Artefactos mínimos esperados
-- Mockups, wireframes o capturas de las vistas principales del módulo.
-- Descripción textual del flujo de crear, consultar y reprogramar citas.
-- Reglas de diseño visual aplicables al módulo.
-- Checklist de verificación del RNF.
-- Evidencia de revisión en escritorio.
-
-## 5. Diseño esperado del módulo de citas
-
-### 5.1 Flujo general esperado
-El módulo de citas debe permitir que una secretaria o coordinador pueda realizar tareas principales sin capacitación técnica especializada.
-
-El flujo esperado contempla tres procesos principales:
-
-#### Crear cita
-1. Acceder al módulo de citas.
-2. Seleccionar la opción **Crear cita**.
-3. Completar el formulario con campos organizados en orden lógico.
-4. Confirmar la información.
-5. Visualizar mensaje de éxito o corrección de errores.
-
-#### Consultar cita
-1. Acceder al listado o buscador de citas.
-2. Identificar la cita deseada.
-3. Visualizar sus datos principales de forma clara.
-4. Acceder a acciones disponibles, como editar o reprogramar.
-
-#### Reprogramar cita
-1. Ubicar la cita existente.
-2. Seleccionar la acción **Reprogramar**.
-3. Modificar fecha, hora u otros datos permitidos.
-4. Confirmar el cambio.
-5. Visualizar mensaje de confirmación.
+Implementarlo reduce errores, costos de formación y riesgos, y potencia los RNF de integridad de datos, validaciones y mensajes claros
 
 ---
 
-## 6. Reglas de usabilidad que debe cumplir la solución
+## Criterios de aceptación
 
-### 6.1 Claridad del flujo
-- Las acciones principales deben estar visibles.
-- El usuario debe saber en qué parte del proceso se encuentra.
-- No deben existir pasos redundantes para completar tareas frecuentes.
-- Las rutas para crear, consultar y reprogramar deben ser fáciles de entender.
+**CA-07.1** — Las tareas de crear, consultar y reprogramar una cita se completan en máximo 4 pasos cada una, contados desde que el usuario inicia la acción hasta que recibe confirmación.
 
-### 6.2 Organización de formularios
-- Los campos deben agruparse por bloques relacionados.
-- El orden de captura debe seguir una secuencia natural.
-- Las etiquetas deben ser claras y directas.
-- Solo deben mostrarse campos necesarios para la tarea.
+Verificación: En diseño se traduce en un conteo explícito de pantallas o estados por flujo. Si en el wireframe del flujo de creación de cita hay más de 4 pantallas o pasos visibles, el diseño ya está fallando el criterio antes de llegar a desarrollo. Se puede documentar con un diagrama de flujo de pantallas que muestre exactamente cuántos pasos tiene cada tarea.
 
-### 6.3 Consistencia visual
-- Los botones equivalentes deben compartir estilo.
-- Los mensajes del sistema deben conservar un patrón visual uniforme.
-- Inputs, títulos, espaciados y tipografías deben verse consistentes entre vistas.
-- No deben existir cambios de estilo sin justificación funcional.
+**CA-07.2** — En cualquier punto de un flujo activo, existe un elemento de "Cancelar" o "Regresar" que lleva al usuario al estado anterior sin perder los datos anteriormente ingresados.
 
-### 6.4 Mensajes y validaciones
-- Los errores deben indicar qué ocurrió y cómo corregirlo.
-- Las confirmaciones deben ser claras.
-- Debe evitarse lenguaje técnico innecesario.
-- Los mensajes deben ser comprensibles para personal administrativo.
+Verificación: prueba funcional; iniciar flujo, avanzar N pasos, presionar cancelar/regresar y confirmar que los datos se restauran correctamente. En diseño, a cada pantalla del flujo se agrega una nota visible que diga exactamente qué datos deben persistir al regresar.
+Si el prototipo está hecho en Figma o similar, se puede simular con variables o componentes con estado. Una tercera opción es un diagrama de flujo anotado donde cada flecha de "regresar" tiene una etiqueta que lista los campos que deben conservarse.
 
-### 6.5 Uso en escritorio
-- La interfaz debe verse correctamente en resolución de escritorio.
-- El contenido no debe romperse al aplicar zoom.
-- Botones, formularios y mensajes deben permanecer visibles y utilizables.
+**CA-07.3** — No existen pantallas intermedias sin propósito funcional claro dentro de los flujos principales.
+
+Verificación: Cada pantalla del diseño necesita justificación funcional. Si hay alguna que solo dice "¿Estás seguro?" sin dar información adicional, esa pantalla es candidata a eliminarse o fusionarse. Esto se audita revisando el mapa de pantallas completo.
+
+**CA-07.4** — Un usuario sin experiencia previa puede completar el registro de una cita nueva en su primer intento siguiendo únicamente los elementos de la interfaz, sin consultar documentación externa.
+
+Verificación: Esto se validará con una prueba de recorrido sobre el prototipo clickeable. Se sienta a alguien que no conoce el sistema, se le pide que registre una cita, y se observa si lo logra sin ayuda.
 
 ---
 
-## 7. Guía de estilo mínima requerida
-Como parte del cumplimiento de este RNF, deberá existir una guía de estilo mínima del módulo de citas con al menos los siguientes elementos:
+## Escenario de calidad
 
-- Colores principales y secundarios.
-- Tipografías y jerarquía de textos.
-- Espaciados entre secciones y componentes.
-- Estilo de botones principales, secundarios y de peligro.
-- Estilo de inputs, selects y áreas de validación.
-- Estilo de mensajes de error, advertencia, información y éxito.
+**Fuente:** Secretaria nueva, primer día de uso del sistema.
 
----
+**Estímulo:** Intenta registrar una cita de evaluación inicial para un paciente nuevo, sin haber recibido capacitación formal.
 
-## 8. Escenario de calidad del RNF
+**Entorno:** Sistema en producción; acceso desde navegador de escritorio en horario laboral.
 
-### Contexto
-Una persona de secretaría utiliza el módulo de citas desde una computadora de escritorio.
+**Artefacto:** Módulo de agenda — flujo de creación de cita.
 
-### Estímulo
-Necesita crear, consultar o reprogramar una cita por primera vez, sin apoyo del desarrollador.
+**Respuesta esperada:** La secretaria puede completar el registro en <= 4 pasos siguiendo los controles visibles en pantalla, sin errores de navegación ni pérdida de datos.
 
-### Respuesta esperada
-La persona logra completar la tarea con una interfaz clara, navegación entendible, formularios organizados, mensajes comprensibles y consistencia visual entre pantallas.
+**Métrica:** Tarea completada en primer intento; <= 4 pasos contados; 0 datos perdidos; tiempo de finalización registrado como referencia base.
 
 ---
 
-## 9. Evidencia que debe adjuntarse
-Para considerar este RNF como atendido, se recomienda adjuntar evidencia como la siguiente:
+## Alcance/Impacto
 
-- Captura del flujo de crear cita.
-- Captura del flujo de consultar cita.
-- Captura del flujo de reprogramar cita.
-- Captura de formularios con campos organizados.
-- Captura de mensajes de validación o confirmación.
-- Captura o enlace a la guía de estilo.
-- Observaciones de prueba en escritorio y con zoom.
+**Incluye:**
+
+- Flujo de creación de cita (evaluación inicial y sesión terapéutica).
+- Flujo de consulta y visualización de citas en calendario.
+- Flujo de reprogramación de cita existente.
+- Navegación entre vistas del módulo (acciones de volver/cancelar).
 
 ---
 
-## 10. Criterios de verificación del entregable
+## Relación con otros RNF
 
-### 10.1 Verificación funcional de experiencia de uso
-- [ ] Existe un flujo identificable para crear citas.
-- [ ] Existe un flujo identificable para consultar citas.
-- [ ] Existe un flujo identificable para reprogramar citas.
-- [ ] Un usuario nuevo puede entender las acciones principales sin ayuda técnica.
+**RNF-06 — Usabilidad y coherencia visual**
 
-### 10.2 Verificación visual
-- [ ] Los botones equivalentes tienen el mismo estilo.
-- [ ] Los formularios mantienen estructura y espaciado uniforme.
-- [ ] Los mensajes del sistema siguen un patrón visual consistente.
+- La guía de estilo y consistencia visual son condición necesaria para que los flujos sean predecibles.
 
-### 10.3 Verificación de formularios
-- [ ] Los campos están agrupados lógicamente.
-- [ ] Las etiquetas son claras.
-- [ ] No existen campos innecesarios.
-- [ ] Los errores explican cómo corregir el problema.
+**RNF-08 — Formularios y validaciones claras**
 
-### 10.4 Verificación de escritorio
-- [ ] La interfaz es usable en escritorio.
-- [ ] La interfaz conserva legibilidad con zoom.
-- [ ] No existen traslapes o recortes que impidan usar el módulo.
+- Los formularios dentro de los flujos deben respetar la agrupación lógica y el orden natural definidos en RNF-08.
 
-### 10.5 Verificación documental
-- [ ] Existe una guía de estilo mínima en el repositorio.
-- [ ] Existe evidencia de revisión del RNF.
-- [ ] El contenido entregado es consistente con el issue del backlog.
+**RNF-09 — Mensajes y retroalimentación al usuario**
 
----
+- Los mensajes de confirmación y error forman parte del flujo y deben integrarse sin interrumpirlo.
 
-## 11. Resultado esperado al cerrar el issue
-El issue **Usabilidad y diseño coherente** podrá considerarse atendido cuando el repositorio contenga evidencia suficiente de que:
+**RNF-10 — Compatibilidad escritorio y zoom**
 
-1. El módulo de citas presenta flujos claros para crear, consultar y reprogramar.
-2. Los formularios son comprensibles y están organizados.
-3. La interfaz mantiene consistencia visual.
-4. La solución funciona adecuadamente en escritorio.
-5. Existe una guía de estilo mínima que documenta la uniformidad del módulo.
-
----
-
-## 12. Observación final
-Este documento funciona como **entregable base** del RNF. A partir de él, el equipo puede agregar implementación, mockups, capturas, componentes o mejoras visuales. Su objetivo es dejar claro **qué debe existir en el proyecto para demostrar que el RNF fue trabajado**, aunque no se represente con un único diagrama UML como sucede en muchos requisitos funcionales.
+- La visibilidad de acciones principales depende del comportamiento correcto en resoluciones y niveles de zoom definidos en RNF-10.
