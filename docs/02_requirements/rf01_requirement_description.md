@@ -53,15 +53,18 @@ al crear la primera cita, la informacion del paciente se guarda en el expediente
 
 **Reglas principales**
 
-1️⃣ Un terapeuta no puede tener dos citas al mismo tiempo.
+1) Un terapeuta no puede tener dos citas al mismo tiempo.
 
-2️⃣ Una sala no puede usarse en dos citas simultaneamente.
+2) Una sala no puede usarse en dos citas simultaneamente.
 
-3️⃣ Un paciente no puede tener dos citas al mismo tiempo.
+3) Un paciente no puede tener dos citas al mismo tiempo.
 
-4️⃣ La hora de inicio debe ser menor que la hora de finalizacion.
+4) La hora de inicio debe ser menor que la hora de finalizacion.
 
-5️⃣ La cita debe crearse con estado: programada.
+5) La cita debe crearse con estado: programada.
+
+6) un paciente solo puede tener 3 citas en estado pendiente es decir que no se han completado a la vez 
+
 
 ## Como se veria en el frontend
 

@@ -6,8 +6,9 @@ La tabla de estados permite mantener trazabilidad sin eliminar fisicamente las c
 
 ```sql
 CREATE TABLE appointment_statuses (
-	id SMALLSERIAL PRIMARY KEY,
-	name VARCHAR(50) NOT NULL UNIQUE
+  id SMALLINT PRIMARY KEY,
+  code VARCHAR(50) UNIQUE NOT NULL, 
+  description TEXT
 );
 ```
 
@@ -28,11 +29,13 @@ Registra al personal que crea, actualiza o cancela citas dentro del modulo.
 
 ```sql
 CREATE TABLE users (
-	id SERIAL PRIMARY KEY,
-	full_name VARCHAR(150) NOT NULL,
-	role VARCHAR(50) NOT NULL,
-	email VARCHAR(255) UNIQUE,
-	created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL, 
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 ```
 
@@ -57,10 +60,12 @@ CREATE TABLE patients (
 
 ```sql
 CREATE TABLE therapists (
-	id SERIAL PRIMARY KEY,
-	full_name VARCHAR(150) NOT NULL,
-	professional_license VARCHAR(50),
-	active BOOLEAN NOT NULL DEFAULT TRUE
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  specialty VARCHAR(255),
+  notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+  active BOOLEAN NOT NULL DEFAULT TRUE
 );
 ```
 
@@ -70,9 +75,11 @@ Cada terapeuta tiene una sala asignada de forma fija.
 
 ```sql
 CREATE TABLE rooms (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(100) NOT NULL UNIQUE,
-	therapist_id INT NOT NULL UNIQUE REFERENCES therapists(id) ON DELETE RESTRICT
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  location VARCHAR(255),
+  capacity INT DEFAULT 1,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 ```
 
