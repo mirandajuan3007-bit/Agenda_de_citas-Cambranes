@@ -43,6 +43,48 @@ Verificación: El calendario se prueba específicamente en 1366×768 al 150% de 
 
 ---
 
+## Traducción al diseño
+
+Este RNF se verifica y se cumple principalmente en la fase de diseño. Las decisiones que toma el equipo de diseño determinan si el requisito es alcanzable antes de escribir una sola línea de código.
+
+**Layout y estructura:**
+El diseño debe definir un ancho base de trabajo y construir todas las vistas sobre ese ancho. Ningún componente debe asumir un viewport más amplio como condición de funcionamiento.
+
+**Unidades y escalado:**
+Los wireframes y prototipos deben especificar que los anchos de contenedores, formularios y columnas usen proporciones relativas al viewport, no valores fijos en píxeles. Esto es lo que permite que el layout se mantenga al aplicar zoom.
+
+**Componentes críticos:**
+El calendario es el componente que más riesgo tiene de romperse con zoom por su densidad visual. El diseño debe definir explícitamente cómo se comportan las celdas y los controles de navegación de fechas cuando el espacio disponible se reduce.
+
+**Mensajes y modales:**
+Los contenedores de mensajes de error, advertencia y confirmación deben diseñarse con ancho máximo adaptable y posicionamiento que no dependa de coordenadas fijas.
+
+**Guía de estilos:**
+La guía debe incluir la especificación de márgenes, paddings y z-index de cada componente principal. Sin esta documentación, la compatibilidad de zoom no puede auditarse ni garantizarse de forma consistente.z
+
+**Entregable de verificación en diseño:**
+Un mapa de pantallas anotado donde cada vista principal del módulo (calendario, formulario de creación, vista de consulta, flujo de reprogramación) tenga una nota que indique el ancho mínimo soportado y el comportamiento esperado a 125% y 150% de zoom.
+
+---
+
+## Traducción al sistema
+
+Este RNF no introduce lógica de negocio nueva ni modifica el comportamiento funcional del módulo. Su cumplimiento en implementación depende de las decisiones de construcción del frontend y de que el desarrollo respete fielmente las especificaciones de diseño.
+
+**Estructura del frontend:**
+El layout del módulo debe implementarse con un sistema de grillas o contenedores fluidos que no dependan de anchos fijos en píxeles absolutos.
+
+**Componente de calendario:**
+Si se utiliza una librería de calendario de terceros, debe validarse desde su selección que el componente mantiene funcionalidad en las resoluciones y niveles de zoom definidos. Un componente que no soporte esto obligaría a reemplazarlo o extenderlo.
+
+**Sin lógica adicional en backend:**
+Este RNF no genera endpoints, reglas de negocio ni cambios en la base de datos. Es enteramente responsabilidad del frontend.
+
+**Verificación en implementación:**
+Una vez desarrollado, se ejecuta una ronda de pruebas visuales manuales recorriendo las vistas principales del módulo en las tres resoluciones y los tres niveles de zoom definidos. Cualquier traslape, recorte o elemento inaccesible encontrado en esa ronda se registra como defecto de implementación y debe corregirse antes de considerar el RNF cumplido.
+
+---
+
 ## Alcance e impacto
 
 **Incluye:**
