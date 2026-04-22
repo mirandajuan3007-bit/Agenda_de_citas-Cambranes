@@ -54,23 +54,23 @@ cuando una cita se cancela, los recursos asociados vuelven a quedar disponibles 
 
 **Reglas principales**
 
-1️⃣ Antes de registrar una cita nueva, el sistema debe validar la disponibilidad del terapeuta, la sala y el paciente.
+1.-Antes de registrar una cita nueva, el sistema debe validar la disponibilidad del terapeuta, la sala y el paciente.
 
-2️⃣ Antes de reprogramar una cita existente, el sistema debe volver a validar la disponibilidad de los recursos involucrados en el nuevo horario.
+2.- Antes de reprogramar una cita existente, el sistema debe volver a validar la disponibilidad de los recursos involucrados en el nuevo horario.
 
-3️⃣ Un terapeuta no puede tener dos citas asignadas en el mismo horario.
+3.- Un terapeuta no puede tener dos citas asignadas en el mismo horario.
 
-4️⃣ Una sala no puede estar asignada a dos citas en el mismo horario.
+4.- Una sala no puede estar asignada a dos citas en el mismo horario.
 
-5️⃣ Un paciente no puede tener dos citas registradas en el mismo horario.
+5.- Un paciente no puede tener dos citas registradas en el mismo horario.
 
-6️⃣ Si existe conflicto con al menos uno de los recursos, el sistema debe impedir el registro o la reprogramacion de la cita.
+6.- Si existe conflicto con al menos uno de los recursos, el sistema debe impedir el registro o la reprogramacion de la cita.
 
-7️⃣ Si existe conflicto, el sistema debe mostrar un mensaje claro indicando que el horario seleccionado no esta disponible.
+7.- Si existe conflicto, el sistema debe mostrar un mensaje claro indicando que el horario seleccionado no esta disponible.
 
-8️⃣ Solo si no existe conflicto con ninguno de los recursos, el sistema debe permitir guardar la cita o los cambios realizados.
+8️.- Solo si no existe conflicto con ninguno de los recursos, el sistema debe permitir guardar la cita o los cambios realizados.
 
-9️⃣ La validacion de disponibilidad no debe modificar informacion por si sola; su funcion es decidir si la operacion puede continuar o no.
+9️.- La validacion de disponibilidad no debe modificar informacion por si sola; su funcion es decidir si la operacion puede continuar o no.
 
 ## Como se veria en el frontend
 
@@ -81,3 +81,6 @@ Si no existe conflicto, el sistema permite continuar con el registro o actualiza
 Si existe conflicto, el sistema muestra un mensaje de error visible en la interfaz indicando que el horario seleccionado no esta disponible y no permite guardar la operacion.
 
 El mensaje puede presentarse cerca del formulario, en una alerta o en un cuadro de validacion, dependiendo del diseno de la interfaz.
+
+<img width="2232" height="2847" alt="Diagrama de flujo" src="https://github.com/user-attachments/assets/156ff282-49ff-4373-a1e5-8bb0cf4420c1" />
+
