@@ -1,0 +1,194 @@
+@startuml AgendaDeCitas_ClassDiagram
+
+title Diagrama de Clases — Módulo de Agenda de Citas\nClínica Psicológica
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 13
+skinparam classBackgroundColor #FAFAFA
+skinparam classBorderColor #555555
+skinparam arrowColor #333333
+skinparam stereotypeFontSize 11
+skinparam noteBorderColor #AAAAAA
+skinparam noteBackgroundColor #FFFDE7
+
+' ─────────────────────────────────────────
+'  ENTIDADES DE CATÁLOGO
+' ─────────────────────────────────────────
+
+class AppointmentStatus {
+  + id : SmallInt <<PK>>
+  + code : String        ' SCHEDULED | CANCELLED | RESCHEDULED | COMPLETED
+  + description : String
+}
+
+class SessionType {
+  + id : Int <<PK>>
+  + name : String        ' "Evaluación inicial" | "Sesión terapéutica"
+}
+
+' ─────────────────────────────────────────
+'  ACTORES / PERSONAS
+' ─────────────────────────────────────────
+
+class User {
+  + id : Int <<PK>>
+  + email : String
+  + passwordHash : String
+  + fullName : String
+  + role : String        ' secretaria | coordinador | administrador
+  + createdAt : DateTime
+  + updatedAt : DateTime
+  --
+  + authenticate() : Boolean
+  + hasRole(role: String) : Boolean
+}
+
+class Patient {
+  + id : Int <<PK>>
+  + folio : String       ' generado automáticamente, único
+  + fullName : String
+  + phone : String
+  + email : String
+  + birthDate : Date
+  + createdAt : DateTime
+  + updatedAt : DateTime
+  --
+  + hasActivePendingAppointments() : Int
+  + canScheduleNewAppointment() : Boolean  ' máx 3 citas pendientes
+}
+
+class Therapist {
+  + id : Int <<PK>>
+  + userId : Int <<FK, nullable>>
+  + specialty : String
+  + notes : String
+  + active : Boolean
+  + createdAt : DateTime
+  --
+  + isAvailableAt(start: DateTime, end: DateTime) : Boolean
+}
+
+' ─────────────────────────────────────────
+'  RECURSO FÍSICO
+' ─────────────────────────────────────────
+
+class Room {
+  + id : Int <<PK>>
+  + name : String
+  + location : String
+  + capacity : Int
+  + createdAt : DateTime
+  --
+  + isAvailableAt(start: DateTime, end: DateTime) : Boolean
+}
+
+' ─────────────────────────────────────────
+'  ENTIDAD CENTRAL
+' ─────────────────────────────────────────
+
+class Appointment {
+  + id : BigInt <<PK>>
+  + patientId : Int <<FK>>
+  + therapistId : Int <<FK>>
+  + roomId : Int <<FK>>
+  + sessionTypeId : Int <<FK>>
+  + statusId : SmallInt <<FK>>
+  + createdBy : Int <<FK>>
+  --
+  + startAt : DateTime
+  + endAt : DateTime
+  + durationMinutes : Int
+  + cancelledReason : String
+  + cancelledAt : DateTime
+  + paymentProofPath : String
+  + comments : String
+  + createdAt : DateTime
+  + updatedAt : DateTime
+  --
+  + schedule() : void
+  + cancel(reason: String, performedBy: User) : void
+  + reschedule(newStart: DateTime, newEnd: DateTime, performedBy: User) : Appointment
+  + complete() : void
+  + isLate() : Boolean
+  + validateNoOverlap() : Boolean
+}
+
+note right of Appointment
+  isLate() es lógica de capa de aplicación.
+  No modifica el estado persistido en BD.
+  Las citas NUNCA se eliminan físicamente.
+  CHECK: start_at < end_at
+end note
+
+' ─────────────────────────────────────────
+'  TRAZABILIDAD
+' ─────────────────────────────────────────
+
+class AuditLog {
+  + id : BigInt <<PK>>
+  + entityType : String
+  + entityId : BigInt
+  + action : String      ' CREATE | UPDATE | CANCEL | RESCHEDULE | STATUS_CHANGE
+  + payload : JSON
+  + performedBy : Int <<FK>>
+  + performedAt : DateTime
+}
+
+' ─────────────────────────────────────────
+'  DISPONIBILIDAD (OPCIONAL / FUTURA)
+' ─────────────────────────────────────────
+
+class TherapistAvailability <<optional>> {
+  + id : Int <<PK>>
+  + therapistId : Int <<FK>>
+  + roomId : Int <<FK>>
+  + weekday : SmallInt   ' 1=lunes … 5=viernes
+  + startTime : Time
+  + endTime : Time
+  + startDate : Date
+  + endDate : Date
+}
+
+note bottom of TherapistAvailability
+  Estructura opcional / futura.
+  No forma parte del MVP.
+end note
+
+' ─────────────────────────────────────────
+'  RELACIONES
+' ─────────────────────────────────────────
+
+' User ↔ Therapist (un terapeuta puede tener usuario del sistema)
+User "0..1" -- "0..1" Therapist : is identified by >
+
+' User crea citas (trazabilidad operativa)
+User "1" --> "0..*" Appointment : creates (created_by) >
+
+' User genera entradas de auditoría
+User "1" --> "0..*" AuditLog : performs >
+
+' Patient ↔ Appointment
+Patient "1" --> "0..*" Appointment : has >
+
+' Therapist ↔ Appointment
+Therapist "1" --> "0..*" Appointment : attends >
+
+' Room ↔ Appointment
+Room "1" --> "0..*" Appointment : hosts >
+
+' Catálogos → Appointment
+AppointmentStatus "1" --> "0..*" Appointment : classifies >
+SessionType       "1" --> "0..*" Appointment : classifies >
+
+' Therapist ↔ Room (asignación fija: un terapeuta — una sala)
+' DECISIÓN ABIERTA: puede imponerse desde BD o solo desde lógica de aplicación
+Therapist "1" -- "1" Room : assigned to >
+
+' TherapistAvailability
+Therapist "1" --> "0..*" TherapistAvailability : defines availability >
+Room      "1" --> "0..*" TherapistAvailability : linked to >
+
+' AuditLog registra cambios sobre Appointment
+Appointment "1" --> "0..*" AuditLog : logged in >
+
+@enduml
