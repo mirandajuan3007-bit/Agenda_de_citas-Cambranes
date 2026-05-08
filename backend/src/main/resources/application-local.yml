@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:agenda;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    locations: classpath:db/migration_h2
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

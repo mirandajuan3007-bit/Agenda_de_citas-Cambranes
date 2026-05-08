@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Pacientes')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h1>Pacientes</h1>
+        <a class="btn btn-primary" th:href="@{/patients/new}">+ Nuevo paciente</a>
+    </div>
+
+    <form th:action="@{/patients}" method="get" class="card" style="padding:12px 16px;">
+        <div class="row" style="align-items:flex-end;">
+            <div class="field" style="flex:1;">
+                <label for="q">Buscar por nombre o folio</label>
+                <input type="text" id="q" name="q" th:value="${q}" placeholder="Ej. Carlos / PAC-..."/>
+            </div>
+            <div>
+                <button class="btn btn-secondary" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <section class="card">
+        <table th:if="${!patients.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Folio</th><th>Nombre</th><th>Telefono</th><th>Correo</th><th>Alta</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${patients}">
+                <td th:text="${p.folio}">PAC-...</td>
+                <td th:text="${p.fullName}">Nombre</td>
+                <td th:text="${p.phone} ?: '-'">Tel</td>
+                <td th:text="${p.email} ?: '-'">Correo</td>
+                <td th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd')}">Fecha</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${patients.isEmpty()}" class="text-muted">No hay pacientes registrados.</p>
+    </section>
+</main>
+</body>
+</html>

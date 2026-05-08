@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Iniciar sesion')}"></head>
+<body>
+<main class="login-shell">
+    <section class="card login-card">
+        <h1>Agenda Clinica</h1>
+        <p class="subtitle">Ingrese para gestionar la agenda de citas</p>
+
+        <div th:if="${loginError}" class="alert alert-error" th:text="${loginError}"></div>
+        <div th:if="${loginInfo}"  class="alert alert-info"  th:text="${loginInfo}"></div>
+
+        <form th:action="@{/login}" method="post" novalidate>
+            <div class="field">
+                <label for="username">Correo</label>
+                <input type="email" id="username" name="username" autocomplete="username" required/>
+            </div>
+            <div class="field">
+                <label for="password">Contrasenia</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required/>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">Entrar</button>
+            </div>
+        </form>
+
+        <p class="login-help">
+            Usuarios demo:<br/>
+            secretaria@clinica.local / password123<br/>
+            coordinador@clinica.local / password123
+        </p>
+    </section>
+</main>
+</body>
+</html>

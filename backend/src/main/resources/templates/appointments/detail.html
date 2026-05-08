@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Detalle de cita')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <h1>Detalle de la cita</h1>
+
+    <div th:if="${isLate}" class="alert alert-warn">
+        Esta cita ya paso de su hora de inicio y sigue programada (RF-07).
+    </div>
+
+    <section class="card">
+        <dl class="kv">
+            <dt>Folio paciente</dt>
+            <dd th:text="${appt.patient.folio}">PAC-...</dd>
+            <dt>Paciente</dt>
+            <dd th:text="${appt.patient.fullName}">Paciente</dd>
+            <dt>Terapeuta</dt>
+            <dd th:text="${appt.therapist.fullName}">Terapeuta</dd>
+            <dt>Sala</dt>
+            <dd th:text="${appt.room.name}">Sala</dd>
+            <dt>Tipo de sesion</dt>
+            <dd th:text="${appt.sessionType.name}">Tipo</dd>
+            <dt>Fecha y hora</dt>
+            <dd>
+                <span th:text="${#temporals.format(appt.startAt, 'yyyy-MM-dd HH:mm')}">2026-05-08 09:00</span>
+                <span class="text-muted text-small">
+                    (<span th:text="${appt.durationMinutes}">60</span> min)
+                </span>
+            </dd>
+            <dt>Estado</dt>
+            <dd>
+                <span class="badge"
+                      th:classappend="'badge-' + ${#strings.toLowerCase(appt.status.code)}"
+                      th:text="${appt.status.code}">SCHEDULED</span>
+                <span th:if="${isLate}" class="badge badge-late">Atrasada</span>
+            </dd>
+            <dt th:if="${appt.cancelledAt != null}">Cancelada el</dt>
+            <dd th:if="${appt.cancelledAt != null}"
+                th:text="${#temporals.format(appt.cancelledAt, 'yyyy-MM-dd HH:mm')}"></dd>
+            <dt th:if="${appt.cancelledReason != null}">Motivo</dt>
+            <dd th:if="${appt.cancelledReason != null}" th:text="${appt.cancelledReason}"></dd>
+            <dt th:if="${appt.rescheduledToId != null}">Reprogramada a</dt>
+            <dd th:if="${appt.rescheduledToId != null}">
+                <a th:href="@{'/appointments/' + ${appt.rescheduledToId}}"
+                   th:text="'Cita #' + ${appt.rescheduledToId}">Cita</a>
+            </dd>
+            <dt th:if="${appt.comments != null and !#strings.isEmpty(appt.comments)}">Comentarios</dt>
+            <dd th:if="${appt.comments != null and !#strings.isEmpty(appt.comments)}"
+                th:text="${appt.comments}"></dd>
+        </dl>
+    </section>
+
+    <section class="card" th:if="${appt.status.code == 'SCHEDULED'}">
+        <h2>Reprogramar cita (RF-08)</h2>
+        <p class="text-muted text-small">
+            La cita actual se archivara como REPROGRAMADA y se creara una nueva.
+        </p>
+        <form th:action="@{'/appointments/' + ${appt.id} + '/reschedule'}"
+              th:object="${rescheduleForm}" method="post">
+            <div class="row">
+                <div class="field">
+                    <label>Nueva fecha</label>
+                    <input type="date" th:field="*{date}" required/>
+                </div>
+                <div class="field">
+                    <label>Nueva hora</label>
+                    <input type="time" th:field="*{startTime}" min="09:00" max="17:30" step="900" required/>
+                </div>
+                <div class="field">
+                    <label>Duracion</label>
+                    <input type="number" th:field="*{durationMinutes}" min="15" max="180" step="15"
+                           th:value="${appt.durationMinutes}" required/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Terapeuta (opcional)</label>
+                    <select th:field="*{therapistId}">
+                        <option value="">-- Mantener (<span th:text="${appt.therapist.fullName}"></span>) --</option>
+                        <option th:each="t : ${therapists}" th:value="${t.id}"
+                                th:text="${t.fullName}">Terapeuta</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Sala (opcional)</label>
+                    <select th:field="*{roomId}">
+                        <option value="">-- Mantener (<span th:text="${appt.room.name}"></span>) --</option>
+                        <option th:each="r : ${rooms}" th:value="${r.id}"
+                                th:text="${r.name}">Sala</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <label>Motivo (opcional)</label>
+                <textarea th:field="*{reason}" maxlength="2000"></textarea>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">Reprogramar</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card" th:if="${appt.status.code == 'SCHEDULED'}">
+        <h2>Cancelar cita (RF-09)</h2>
+        <p class="text-muted text-small">
+            Solo se permite cancelar antes de la hora de inicio. Quedara registrado el motivo.
+        </p>
+        <form th:action="@{'/appointments/' + ${appt.id} + '/cancel'}"
+              th:object="${cancelForm}" method="post">
+            <div class="field">
+                <label>Motivo de la cancelacion</label>
+                <textarea th:field="*{reason}" required maxlength="1000"
+                          placeholder="Indique por que se cancela la cita"></textarea>
+                <div class="field-error" th:errors="*{reason}"></div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-danger" type="submit">Cancelar cita</button>
+            </div>
+        </form>
+    </section>
+
+    <p style="margin-top:24px;">
+        <a class="btn btn-secondary" th:href="@{/appointments}">&larr; Volver al listado</a>
+    </p>
+</main>
+</body>
+</html>

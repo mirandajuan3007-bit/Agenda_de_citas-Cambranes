@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Inicio')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <h1>Resumen de la agenda</h1>
+    <p class="text-muted">Citas programadas para los proximos 7 dias.</p>
+
+    <div class="grid grid-3" style="margin-bottom: 24px;">
+        <div class="kpi">
+            <div class="label">Citas en los proximos 7 dias</div>
+            <div class="value" th:text="${upcomingCount}">0</div>
+        </div>
+        <div class="kpi" th:classappend="${lateCount > 0} ? 'warn'">
+            <div class="label">Citas atrasadas (RF-07)</div>
+            <div class="value" th:text="${lateCount}">0</div>
+        </div>
+        <div class="kpi">
+            <div class="label">Acciones rapidas</div>
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                <a class="btn btn-primary" th:href="@{/appointments/new}">Nueva cita</a>
+                <a class="btn btn-secondary" th:href="@{/patients/new}">Nuevo paciente</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="card">
+        <div class="card-header">
+            <h2 style="margin:0;">Proximas citas</h2>
+            <a class="btn btn-ghost" th:href="@{/appointments}">Ver todas &rsaquo;</a>
+        </div>
+
+        <table th:if="${!upcoming.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Fecha</th><th>Hora</th><th>Paciente</th>
+                <th>Terapeuta</th><th>Sala</th><th>Estado</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${upcoming}" th:classappend="${@appointmentService.isLate(a)} ? 'row-late'">
+                <td th:text="${#temporals.format(a.startAt, 'yyyy-MM-dd')}">2026-05-08</td>
+                <td th:text="${#temporals.format(a.startAt, 'HH:mm')}">09:00</td>
+                <td th:text="${a.patient.fullName}">Paciente</td>
+                <td th:text="${a.therapist.fullName}">Terapeuta</td>
+                <td th:text="${a.room.name}">Sala</td>
+                <td>
+                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(a.status.code)}"
+                          th:text="${a.status.code}">SCHEDULED</span>
+                    <span th:if="${@appointmentService.isLate(a)}" class="badge badge-late">Atrasada</span>
+                </td>
+                <td><a class="btn btn-ghost" th:href="@{'/appointments/' + ${a.id}}">Ver</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${upcoming.isEmpty()}" class="text-muted">No hay citas en este rango.</p>
+    </section>
+</main>
+</body>
+</html>

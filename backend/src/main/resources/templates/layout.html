@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} ?: 'Agenda Clinica'">Agenda Clinica</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<header th:fragment="topbar" class="topbar" sec:authorize="isAuthenticated()">
+    <a class="brand" th:href="@{/}">Agenda Clinica</a>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/appointments}">Citas</a>
+        <a th:href="@{/appointments/new}">Nueva cita</a>
+        <a th:href="@{/patients}">Pacientes</a>
+    </nav>
+    <div class="session">
+        <span th:text="${currentUser != null ? currentUser.fullName : ''}">Usuario</span>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit">Cerrar sesion</button>
+        </form>
+    </div>
+</header>
+
+<div th:fragment="flash">
+    <div th:if="${flashSuccess}" class="alert alert-success" th:text="${flashSuccess}"></div>
+    <div th:if="${flashError}"   class="alert alert-error"   th:text="${flashError}"></div>
+    <div th:if="${flashWarn}"    class="alert alert-warn"    th:text="${flashWarn}"></div>
+    <div th:if="${flashInfo}"    class="alert alert-info"    th:text="${flashInfo}"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Confirmar cita')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <h1>Resumen final de la cita</h1>
+    <p class="text-muted">Revise la informacion. La cita se guardara hasta que confirme (RF-02).</p>
+
+    <section class="card">
+        <dl class="kv">
+            <dt>Tipo</dt>
+            <dd th:text="${form.appointmentType == 'EVALUATION'} ? 'Evaluacion inicial' : 'Cita de terapia'">Tipo</dd>
+
+            <dt>Paciente</dt>
+            <dd th:if="${selectedPatient != null}"
+                th:text="${selectedPatient.fullName + ' (' + selectedPatient.folio + ')'}">Paciente</dd>
+            <dd th:if="${selectedPatient == null}"
+                th:text="${form.firstName + ' ' + form.lastName + ' (paciente nuevo)'}">Paciente nuevo</dd>
+
+            <dt>Terapeuta</dt>
+            <dd th:text="${selectedTherapist?.fullName}">Terapeuta</dd>
+
+            <dt>Sala</dt>
+            <dd th:text="${selectedRoom?.name}">Sala</dd>
+
+            <dt>Tipo de sesion</dt>
+            <dd th:text="${selectedSessionType?.name}">Sesion</dd>
+
+            <dt>Fecha</dt>
+            <dd th:text="${form.date}">Fecha</dd>
+
+            <dt>Hora</dt>
+            <dd>
+                <span th:text="${form.startTime}">09:00</span>
+                <span class="text-muted text-small">
+                    (duracion: <span th:text="${form.durationMinutes}">60</span> min)
+                </span>
+            </dd>
+
+            <dt th:if="${form.fee != null}">Cuota</dt>
+            <dd th:if="${form.fee != null}" th:text="${'$' + form.fee}">$0.00</dd>
+
+            <dt th:if="${form.comments != null and !#strings.isEmpty(form.comments)}">Comentarios</dt>
+            <dd th:if="${form.comments != null and !#strings.isEmpty(form.comments)}" th:text="${form.comments}"></dd>
+
+            <dt>Estado inicial</dt>
+            <dd><span class="badge badge-scheduled">SCHEDULED</span></dd>
+        </dl>
+
+        <div class="actions">
+            <form th:action="@{'/appointments/confirm/' + ${token}}" method="post" style="display:inline">
+                <button class="btn btn-primary" type="submit">Confirmar y guardar</button>
+            </form>
+            <form th:action="@{'/appointments/cancel-preview/' + ${token}}" method="post" style="display:inline">
+                <button class="btn btn-secondary" type="submit">Volver al formulario</button>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

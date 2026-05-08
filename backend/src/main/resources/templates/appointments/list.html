@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Citas')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <div class="card-header" style="display:flex; align-items:center; justify-content:space-between;">
+        <h1>Listado de citas</h1>
+        <a class="btn btn-primary" th:href="@{/appointments/new}">+ Nueva cita</a>
+    </div>
+
+    <section class="card">
+        <table th:if="${!appointments.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Fecha</th><th>Hora</th><th>Paciente</th>
+                <th>Terapeuta</th><th>Sala</th><th>Tipo</th><th>Estado</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${appointments}" th:classappend="${@appointmentService.isLate(a)} ? 'row-late'">
+                <td th:text="${#temporals.format(a.startAt, 'yyyy-MM-dd')}">2026-05-08</td>
+                <td th:text="${#temporals.format(a.startAt, 'HH:mm')}">09:00</td>
+                <td th:text="${a.patient.fullName}">Paciente</td>
+                <td th:text="${a.therapist.fullName}">Terapeuta</td>
+                <td th:text="${a.room.name}">Sala</td>
+                <td th:text="${a.sessionType.name}">Tipo</td>
+                <td>
+                    <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(a.status.code)}"
+                          th:text="${a.status.code}">SCHEDULED</span>
+                    <span th:if="${@appointmentService.isLate(a)}" class="badge badge-late">Atrasada</span>
+                </td>
+                <td><a class="btn btn-ghost" th:href="@{'/appointments/' + ${a.id}}">Detalle</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${appointments.isEmpty()}" class="text-muted">Aun no hay citas registradas.</p>
+    </section>
+</main>
+</body>
+</html>

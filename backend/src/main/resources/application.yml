@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: agenda-citas
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/agenda}
+    username: ${SPRING_DATASOURCE_USERNAME:agenda}
+    password: ${SPRING_DATASOURCE_PASSWORD:agenda}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: false
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  thymeleaf:
+    cache: false
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-stacktrace: never
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    db:
+      enabled: true
+
+agenda:
+  business:
+    work-start: "09:00"
+    work-end: "17:30"
+    work-days: "MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY"
+    max-pending-per-patient: 3
+    min-days-ahead: 0
+    max-days-ahead: 90
+    default-duration-minutes: 60
+    timezone: "America/Mexico_City"

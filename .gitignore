@@ -1,0 +1,8 @@
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+**/.idea/
+**/.vscode/
+**/*.iml
+**/.DS_Store
+backend/.flattened-pom.xml
+logs/*.log

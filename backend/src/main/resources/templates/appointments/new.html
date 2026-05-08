@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Nueva cita')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <h1>Nueva cita</h1>
+    <p class="text-muted">
+        Capture los datos. Antes de guardar se mostrara un resumen para confirmar (RF-02).
+    </p>
+
+    <form th:action="@{/appointments/new}" th:object="${form}" method="post" class="card">
+
+        <div class="fieldset">
+            <legend>Tipo de cita</legend>
+            <div class="row">
+                <label style="flex:1; cursor:pointer;">
+                    <input type="radio" th:field="*{appointmentType}" value="THERAPY"/>
+                    Cita de terapia (paciente existente)
+                </label>
+                <label style="flex:1; cursor:pointer;">
+                    <input type="radio" th:field="*{appointmentType}" value="EVALUATION"/>
+                    Evaluacion inicial (paciente nuevo)
+                </label>
+            </div>
+            <div class="field-error" th:errors="*{appointmentType}"></div>
+        </div>
+
+        <div class="fieldset" th:if="${form.appointmentType == 'THERAPY' or form.appointmentType == null}">
+            <legend>Paciente existente</legend>
+            <div class="field">
+                <label for="patientId">Paciente</label>
+                <select th:field="*{patientId}" id="patientId">
+                    <option value="">-- Seleccione un paciente --</option>
+                    <option th:each="p : ${patients}"
+                            th:value="${p.id}"
+                            th:text="${p.fullName + ' (' + p.folio + ')'}">Paciente</option>
+                </select>
+                <div class="field-error" th:errors="*{patientId}"></div>
+            </div>
+        </div>
+
+        <div class="fieldset" th:if="${form.appointmentType == 'EVALUATION'}">
+            <legend>Datos del paciente nuevo</legend>
+            <div class="row">
+                <div class="field">
+                    <label>Nombre(s)</label>
+                    <input type="text" th:field="*{firstName}" maxlength="120"/>
+                </div>
+                <div class="field">
+                    <label>Apellidos</label>
+                    <input type="text" th:field="*{lastName}" maxlength="120"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Telefono</label>
+                    <input type="tel" th:field="*{phone}" maxlength="50"/>
+                </div>
+                <div class="field">
+                    <label>Correo</label>
+                    <input type="email" th:field="*{email}" maxlength="255"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="fieldset">
+            <legend>Detalles de la cita</legend>
+            <div class="row">
+                <div class="field">
+                    <label for="therapistId">Terapeuta</label>
+                    <select th:field="*{therapistId}" id="therapistId">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="t : ${therapists}" th:value="${t.id}" th:text="${t.fullName}">Terapeuta</option>
+                    </select>
+                    <div class="field-error" th:errors="*{therapistId}"></div>
+                </div>
+                <div class="field">
+                    <label for="roomId">Sala</label>
+                    <select th:field="*{roomId}" id="roomId">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.name}">Sala</option>
+                    </select>
+                    <div class="field-error" th:errors="*{roomId}"></div>
+                </div>
+                <div class="field">
+                    <label for="sessionTypeId">Tipo de sesion</label>
+                    <select th:field="*{sessionTypeId}" id="sessionTypeId">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="s : ${sessionTypes}" th:value="${s.id}" th:text="${s.name}">Tipo</option>
+                    </select>
+                    <div class="field-error" th:errors="*{sessionTypeId}"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Fecha</label>
+                    <input type="date" th:field="*{date}"/>
+                    <div class="field-error" th:errors="*{date}"></div>
+                </div>
+                <div class="field">
+                    <label>Hora de inicio</label>
+                    <input type="time" th:field="*{startTime}" min="09:00" max="17:30" step="900"/>
+                    <div class="field-error" th:errors="*{startTime}"></div>
+                </div>
+                <div class="field">
+                    <label>Duracion (minutos)</label>
+                    <input type="number" th:field="*{durationMinutes}" min="15" max="180" step="15"/>
+                    <div class="field-error" th:errors="*{durationMinutes}"></div>
+                </div>
+                <div class="field">
+                    <label>Cuota (opcional)</label>
+                    <input type="number" th:field="*{fee}" min="0" step="0.01"/>
+                </div>
+            </div>
+            <div class="field">
+                <label>Comentarios</label>
+                <textarea th:field="*{comments}" maxlength="2000"
+                          placeholder="Detalles del paciente, cita o terapeuta"></textarea>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" type="submit">Continuar al resumen</button>
+            <a class="btn btn-secondary" th:href="@{/appointments}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

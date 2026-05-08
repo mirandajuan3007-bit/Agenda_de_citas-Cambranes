@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Nuevo paciente')}"></head>
+<body>
+<header th:replace="~{layout :: topbar}"></header>
+<main class="container">
+    <div th:replace="~{layout :: flash}"></div>
+
+    <h1>Registrar paciente</h1>
+    <p class="text-muted">El folio se generara automaticamente (RF-04).</p>
+
+    <form th:action="@{/patients/new}" th:object="${form}" method="post" class="card">
+        <div class="field">
+            <label>Nombre completo</label>
+            <input type="text" th:field="*{fullName}" maxlength="255"/>
+            <div class="field-error" th:errors="*{fullName}"></div>
+        </div>
+        <div class="row">
+            <div class="field">
+                <label>Telefono</label>
+                <input type="tel" th:field="*{phone}" maxlength="50"/>
+            </div>
+            <div class="field">
+                <label>Correo</label>
+                <input type="email" th:field="*{email}" maxlength="255"/>
+                <div class="field-error" th:errors="*{email}"></div>
+            </div>
+            <div class="field">
+                <label>Fecha de nacimiento</label>
+                <input type="date" th:field="*{birthDate}"/>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" type="submit">Registrar</button>
+            <a class="btn btn-secondary" th:href="@{/patients}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

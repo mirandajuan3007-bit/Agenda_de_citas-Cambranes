@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: agenda-db
+    environment:
+      POSTGRES_DB: agenda
+      POSTGRES_USER: agenda
+      POSTGRES_PASSWORD: agenda
+    ports:
+      - "5432:5432"
+    volumes:
+      - agenda-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agenda -d agenda"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agenda-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/agenda
+      SPRING_DATASOURCE_USERNAME: agenda
+      SPRING_DATASOURCE_PASSWORD: agenda
+    ports:
+      - "8080:8080"
+
+volumes:
+  agenda-pgdata:

@@ -1,59 +1,146 @@
-# Modulo de Agenda
+# Sistema de Agenda de Citas - Clínica Psicológica Cambranes
 
-## Descripción
+Aplicación completa de gestión de citas para una clínica psicológica, construida con **Spring Boot 3.2**, **Java 17**, **Thymeleaf** y **PostgreSQL/H2**.
 
-Este módulo forma parte de un sistema para la gestión de una clínica psicológica. Su responsabilidad es administrar la programación de citas entre pacientes y terapeutas.
+## 📋 Descripción
 
-## Objetivo
+Sistema web que permite:
+- ✅ Crear citas sin conflictos de horario (RF-01)
+- ✅ Validar horario laboral y rango de fechas (RF-03)
+- ✅ Vista previa antes de confirmar (RF-02)
+- ✅ Generar folios únicos para pacientes (RF-04)
+- ✅ Registrar nuevos pacientes (RF-05)
+- ✅ Ver detalles de citas (RF-06)
+- ✅ Indicadores visuales de citas atrasadas (RF-07)
+- ✅ Reprogramar citas (RF-08)
+- ✅ Cancelar citas con justificación (RF-09)
+- ✅ Auditoría completa de cambios (RNF-04)
+- ✅ Control de acceso por rol (RNF-02)
 
-Gestionar las citas de manera eficiente, evitando conflictos de horario y garantizando la trazabilidad de cada sesión.
+## 🚀 Inicio Rápido
 
-## Actores del sistema
+### Sin Docker (Recomendado para desarrollo)
 
-* Secretaria
-* Coordinador de la clínica
+```bash
+cd backend
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+```
 
-## Funcionalidades principales
+Abre: http://localhost:8080
 
-* Registro de citas
-* Visualización de agenda (calendario)
-* Reagendamiento de citas
-* Cancelación de citas
+Credenciales demo:
+- Email: `secretaria@clinica.local`
+- Contraseña: `password123`
 
-## Reglas de negocio clave
+### Con Docker
 
-* Horario laboral: lunes a viernes, de 9:00 a 17:30
-* No se permiten conflictos de horario entre terapeuta, sala o paciente
-* Las citas no se eliminan, solo cambian de estado
-* Cada terapeuta tiene una sala asignada
-* Las citas se gestionan en estados trazables: programada, cancelada, reprogramada y finalizada
+```bash
+docker compose up
+```
 
-## Alcance del módulo
+Abre: http://localhost:8080
 
-Este módulo gestiona únicamente la agenda de citas.
-Otros aspectos como pagos, evaluación socioeconómica o expedientes no forman parte de este módulo.
+## 📚 Documentación
 
-## Documentación detallada
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Documentación técnica completa
+  - Stack tecnológico
+  - Arquitectura y patrones
+  - Esquema de base de datos
+  - Decisiones de diseño
+  - Reglas de negocio
+  - Mapeo RF/RNF a código
 
-La documentación completa del módulo se encuentra en:
-* `/docs/01_problem_definition`
-* `/docs/02_requirements`
-* `/docs/03_modeling`
-* `/docs/04_design`
+- **[SETUP_LOCAL.md](./SETUP_LOCAL.md)** - Guía paso a paso
+  - Requisitos previos
+  - Instrucciones para Windows/Mac/Linux
+  - Troubleshooting
+  - Pruebas de funcionalidad
 
-## Diagramas
+## 🔧 Requisitos Previos
 
-Los diagramas del sistema (UML, flujos, etc.) se encuentran en el repositorio dentro de la carpeta `/docs/03_modeling`.
+### Opción A (Sin Docker)
+- Java 17+ ([Descargar](https://adoptium.net))
+- Maven 3.8+ ([Descargar](https://maven.apache.org))
+- Git
 
-Los prototipos de interfaz del modulo se encuentran en la carpeta `/prototypes`.
+### Opción B (Con Docker)
+- Docker Desktop ([Descargar](https://www.docker.com/products/docker-desktop))
+- Git
 
-## Automatizacion
+## 📁 Estructura del Proyecto
 
-El repositorio cuenta con un workflow de GitHub Actions en `.github/workflows/documentation-quality.yml`.
+```
+agenda-citas-cambranes/
+├── backend/
+│   ├── pom.xml                           # Dependencias Maven
+│   ├── Dockerfile                        # Multi-stage build
+│   ├── src/main/java/com/clinica/agenda/
+│   │   ├── config/                       # Configuración Spring
+│   │   ├── model/                        # Entidades JPA
+│   │   ├── repository/                   # Data Access Layer
+│   │   ├── service/                      # Lógica de negocio
+│   │   ├── security/                     # Spring Security
+│   │   ├── exception/                    # Manejo de errores
+│   │   ├── dto/                          # Form bindings
+│   │   └── web/                          # Controllers
+│   ├── src/main/resources/
+│   │   ├── templates/                    # Thymeleaf HTML
+│   │   ├── static/styles.css             # Estilos CSS
+│   │   ├── application.yml               # Config principal
+│   │   ├── logback-spring.xml            # Logging
+│   │   └── db/migration/                 # SQL Flyway
+│   └── target/                           # Compilado (generado)
+├── docker-compose.yml                    # Orquestación Docker
+├── DEVELOPMENT.md                        # Documentación técnica
+├── SETUP_LOCAL.md                        # Guía local
+└── README.md                             # Este archivo
+```
 
-Este pipeline revisa automaticamente dos cosas en cada push o pull request hacia `develop` y `main`:
+## 🏗️ Arquitectura
 
-* sintaxis de los scripts Python del repositorio
-* estructura documental del proyecto mediante `scripts/validate_repo_structure.py`
+```
+Thymeleaf Templates (HTML)
+         ↓
+Spring Web MVC Controllers
+         ↓
+Service Layer (Lógica negocio)
+         ↓
+Spring Data Repositories (JPA)
+         ↓
+PostgreSQL / H2 Database
+```
 
-El workflow genera un reporte como artefacto para apoyar la revision del equipo. Actualmente funciona como validacion informativa, no como bloqueo estricto, para permitir corregir gradualmente la deuda documental existente.
+## 🔐 Seguridad
+
+- **Autenticación**: Spring Security form-based login
+- **Hashing**: BCrypt para contraseñas
+- **CSRF**: Protección nativa habilitada
+- **Autorización**: Roles SECRETARY / COORDINATOR
+- **Auditoría**: Todos cambios registrados con usuario y timestamp
+
+## 📊 Base de Datos
+
+Tablas principales: `users`, `patients`, `therapists`, `rooms`, `appointments`, `audit_logs`
+
+Esquema completo en: [DEVELOPMENT.md](./DEVELOPMENT.md#esquema-de-base-de-datos)
+
+## 🧪 Verificar Que Funciona
+
+### Health Check
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+### Login
+Abre http://localhost:8080/login con credenciales demo
+
+## 📖 Documentación Detallada
+
+La documentación del proyecto está en:
+* [DEVELOPMENT.md](./DEVELOPMENT.md) - Técnica y arquitectura
+* [SETUP_LOCAL.md](./SETUP_LOCAL.md) - Guía local paso a paso
+* `/docs/` - Requisitos, modelado, diseño
+
+---
+
+**Versión**: 1.0.0 | **Stack**: Spring Boot 3.2.5 + Java 17 + Thymeleaf | **BD**: PostgreSQL/H2
