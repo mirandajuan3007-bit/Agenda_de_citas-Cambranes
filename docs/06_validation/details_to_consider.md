@@ -30,15 +30,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** Riesgo reputacional. Aunque sea demo, los seeds están versionados con credenciales legibles
 - **Recomendación:** Reemplazar por hash bcrypt en seed y comparar via `bcrypt.compare`; o marcar explícitamente como `// DEMO ONLY — no usar en producción` y mover seed a un archivo no versionado
 
-### H-03 · Cero pruebas unitarias y de componentes
-
-- **Severidad:** Crítica
-- **Tipo:** Pruebas
-- **Origen:** `frontend/package.json` sin `test` script ni Vitest/Jest · ningún `*.test.*` en el repositorio
-- **Impacto:** Imposibilita el cierre del ciclo V (parte derecha)
-- **Recomendación:** Instalar Vitest + React Testing Library y realizar pruebas
-
-### H-04 · `auditLogs` sin uso operativo
+### H-03 · `auditLogs` sin uso operativo
 
 - **Severidad:** Alta
 - **Tipo:** Diseño + Documentación
@@ -46,7 +38,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RNF-04 incumplido
 - **Recomendación:** Mínimo: botón "Exportar logs" en dashboard del coordinador que descargue JSON. Ideal: vista de auditoría con filtros
 
-### H-05 · Decisiones técnicas no documentadas
+### H-04 · Decisiones técnicas no documentadas
 
 - **Severidad:** Media
 - **Tipo:** Documentación
@@ -54,7 +46,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** Diseño y código drifteando
 - **Recomendación:** Actualizar `docs/05_final/diseño_base_de_datos.md` con las decisiones realizadas o ajustar el código para alinearlo al diseño
 
-### H-06 · `Therapist.user_id` faltante
+### H-05 · `Therapist.user_id` faltante
 
 - **Severidad:** Media
 - **Tipo:** Diseño
@@ -62,7 +54,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** Bloquea futuro login de terapeutas
 - **Recomendación:** Añadirlo opcional al `interface Therapist`
 
-### H-07 · Hora "actual" hardcodeada
+### H-06 · Hora "actual" hardcodeada
 
 - **Severidad:** Alta
 - **Tipo:** Bug latente
@@ -70,8 +62,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** Tras esa fecha, el indicador atrasada siempre se cumple para todas las citas anteriores y se pierde sentido
 - **Recomendación:** Reemplazar por `new Date()` salvo flag de demo, documentar el flag si se conserva
 
-
-### H-08 · Regla de máx. 3 citas activas no aplicada
+### H-07 · Regla de máx. 3 citas activas no aplicada
 
 - **Severidad:** Alta
 - **Tipo:** Bug funcional
@@ -79,7 +70,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RF-01 regla 6 no se aplica
 - **Recomendación:** Llamar `countScheduledAppointments(patientId) >= 3` en el wizard antes de habilitar "Confirmar"
 
-### H-9 · Cancelación sin verificar `now < startAt`
+### H-8 · Cancelación sin verificar `now < startAt`
 
 - **Severidad:** Media
 - **Tipo:** Bug funcional
@@ -87,7 +78,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RF-09 regla 1 ("solo se pueden cancelar antes de su hora")
 - **Recomendación:** Añadir validación 
 
-### H-10 · Atomicidad de `rescheduleAppointment` no garantizada
+### H-9 · Atomicidad de `rescheduleAppointment` no garantizada
 
 - **Severidad:** Media
 - **Tipo:** Bug latente
@@ -95,7 +86,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RNF-01
 - **Recomendación:** Construir `nextData` completo en memoria y solo entonces `saveData(nextData)`
 
-### H-11 · Filtrado por rol no implementado
+### H-10 · Filtrado por rol no implementado
 
 - **Severidad:** Media
 - **Tipo:** Diseño / Seguridad
@@ -103,7 +94,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RNF-02 incompleto
 - **Recomendación:** Definir matriz rol×vista×acción y aplicar guard en Sidebar/Header/modales
 
-### H-13 · Mensaje de error en RF-06 silencioso
+### H-11 · Mensaje de error en RF-06 silencioso
 
 - **Severidad:** Baja
 - **Tipo:** UX
@@ -111,7 +102,7 @@ Lista cada hallazgo con prioridad, esfuerzo estimado y referencia al artefacto.
 - **Impacto:** RF-06 regla "mostrar mensaje de error si no existe"
 - **Recomendación:** Mostrar `Toast` con mensaje claro
 
-### H-14 · Wizard combina nombre y apellidos
+### H-12 · Wizard combina nombre y apellidos
 
 - **Severidad:** Baja
 - **Tipo:** UX

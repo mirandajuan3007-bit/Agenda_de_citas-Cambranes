@@ -147,7 +147,7 @@ Convenciones de la columna "resultado":
 |---|---|---|
 | Operaciones atómicas (todo o nada) | localStorage no es transaccional. `rescheduleAppointment` modifica el original y luego escribe la nueva; un fallo intermedio deja el estado parcial | No |
 | No se almacenan resultados parciales tras fallo | Sin protección | No |
-| Notificación de error al usuario | Toast en errores capturados | Parcial — solo si el error se lanza |
+| Notificación de error al usuario | Toast en errores capturados | Parcial, solo si el error se lanza |
 | **Cumplimiento RNF-01** | | 15 % |
 
 ### RNF-02 Control de acceso básico y privacidad UI
@@ -247,4 +247,4 @@ Convenciones de la columna "resultado":
 | RNF-08 Formularios | 90 % |
 | RNF-09 Mensajes | 90 % |
 | RNF-10 Escritorio/zoom | Sin verificar |
-| **Promedio (sin no verificado)** | **aprox. 65 %** |
+| **Promedio (sin no verificados)** | **aprox. 65 %** |
