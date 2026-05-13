@@ -71,9 +71,9 @@ export function AppointmentDetailModal({ appointmentId, onClose, onSuccess }: Ap
 
   const isScheduled = appointment.statusId === 1;
 
-  function handleComplete() {
+  async function handleComplete() {
     try {
-      completeAppointment(appointmentId);
+      await completeAppointment(appointmentId);
       onSuccess('Cita marcada como completada.');
       onClose();
     } catch (e) {

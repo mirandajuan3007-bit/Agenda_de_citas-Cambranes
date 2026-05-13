@@ -72,12 +72,12 @@ export function RescheduleModal({ appointment, onClose, onSuccess }: RescheduleM
     setConflicts(errors);
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (conflicts.length > 0) return;
     setLoading(true);
     try {
       const startAt = `${date}T${time}:00`;
-      rescheduleAppointment(appointment.id, { startAt });
+      await rescheduleAppointment(appointment.id, { startAt });
       onSuccess('Cita reagendada correctamente.');
       onClose();
     } catch (e) {

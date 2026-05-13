@@ -37,14 +37,14 @@ export function CancelModal({ appointment, onClose, onSuccess }: CancelModalProp
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (reason.trim().length < 5) {
       setError('El motivo debe tener al menos 5 caracteres.');
       return;
     }
     setLoading(true);
     try {
-      cancelAppointment(appointment.id, reason.trim());
+      await cancelAppointment(appointment.id, reason.trim());
       onSuccess('Cita cancelada correctamente.');
       onClose();
     } catch (e) {

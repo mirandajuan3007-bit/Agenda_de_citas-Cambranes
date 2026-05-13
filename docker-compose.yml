@@ -1,0 +1,50 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: agenda-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: agenda_cambranes
+      MYSQL_USER: agenda
+      MYSQL_PASSWORD: agenda_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+      TZ: America/Mexico_City
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: agenda-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/agenda_cambranes?useSSL=false&serverTimezone=America/Mexico_City&allowPublicKeyRetrieval=true
+      DB_USER: agenda
+      DB_PASSWORD: agenda_pass
+      CORS_ORIGINS: http://localhost,http://localhost:8081,http://localhost:5173,http://localhost:4173,http://localhost:8080
+      TZ: America/Mexico_City
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: agenda-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+
+volumes:
+  mysql_data:

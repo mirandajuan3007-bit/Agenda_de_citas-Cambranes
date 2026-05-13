@@ -9,18 +9,34 @@
 import { useState, type FormEvent } from 'react';
 import { useApp } from '../../context/AppContext';
 
-/** Formulario de login con validación local de credenciales. */
+/** Formulario de login con validacion contra el backend. */
 export function LoginPage() {
   const { login } = useApp();
   const [email, setEmail] = useState('secretaria@clinica.mx');
   const [password, setPassword] = useState('secretaria123');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setError(false);
-    const ok = login(email.trim(), password);
-    if (!ok) setError(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      const ok = await login(email.trim(), password);
+      if (!ok) setError('Credenciales incorrectas. Intenta de nuevo.');
+    } catch (err: any) {
+      // Errores no relacionados con credenciales (backend caido, 5xx, etc.)
+      const status = err?.status;
+      if (status === undefined) {
+        setError('No se pudo conectar con el servidor. Verifica que el backend este corriendo.');
+      } else {
+        setError(`Error del servidor (${status}). Intenta de nuevo en unos segundos.`);
+      }
+      // eslint-disable-next-line no-console
+      console.error('[login] error', err);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -51,6 +67,7 @@ export function LoginPage() {
               placeholder="usuario@clinica.mx"
               required
               autoFocus
+              disabled={submitting}
             />
           </div>
           <div className="form-group">
@@ -63,11 +80,21 @@ export function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
+              disabled={submitting}
             />
           </div>
-          {error && <p className="form-error mb-2">Credenciales incorrectas. Intenta de nuevo.</p>}
-          <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center' }}>
-            <i className="fas fa-sign-in-alt" /> Ingresar
+          {error && <p className="form-error mb-2">{error}</p>}
+          <button
+            type="submit"
+            className="btn btn-primary w-full"
+            style={{ justifyContent: 'center' }}
+            disabled={submitting}
+          >
+            {submitting ? (
+              <><i className="fas fa-spinner fa-spin" /> Ingresando…</>
+            ) : (
+              <><i className="fas fa-sign-in-alt" /> Ingresar</>
+            )}
           </button>
         </form>
       </div>
