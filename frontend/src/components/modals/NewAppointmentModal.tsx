@@ -459,26 +459,26 @@ export function NewAppointmentModal({ initialDate, initialTime, onClose, onSucce
    *   1. Si es paciente nuevo → context.createPatient() → obtiene patientId y folio.
    *   2. context.createAppointment() → persiste en localStorage y dispara REFRESH_DATA.
    */
-  function handleConfirm() {
+  async function handleConfirm() {
     let patientId = state.patientId!;
     let folio = '';
 
-    if (state.isNewPatient) {
-      const newPat = createPatient({
-        fullName: state.newPatientName,
-        phone: state.newPatientPhone,
-        email: state.newPatientEmail,
-      });
-      patientId = newPat.id;
-      folio = newPat.folio;
-    }
-
-    const startAt = `${state.date}T${state.time}:00`;
-    const duration = SESSION_DURATIONS[state.sessionTypeId];
-    const endAt = addMinutes(startAt, duration);
-
     try {
-      const appt = createAppointment({
+      if (state.isNewPatient) {
+        const newPat = await createPatient({
+          fullName: state.newPatientName,
+          phone: state.newPatientPhone,
+          email: state.newPatientEmail,
+        });
+        patientId = newPat.id;
+        folio = newPat.folio;
+      }
+
+      const startAt = `${state.date}T${state.time}:00`;
+      const duration = SESSION_DURATIONS[state.sessionTypeId];
+      const endAt = addMinutes(startAt, duration);
+
+      const appt = await createAppointment({
         patientId,
         therapistId: state.therapistId!,
         roomId: state.roomId!,

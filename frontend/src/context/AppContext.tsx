@@ -1,16 +1,8 @@
 /**
  * @file context/AppContext.tsx
- * Estado global de la aplicación usando React Context + useReducer.
- *
- * Arquitectura:
- *   - AppContext provee datos y métodos a todos los componentes.
- *   - useReducer gestiona transiciones de estado de forma predecible.
- *   - Cada mutación (crear/cancelar/reprogramar) llama al servicio correspondiente
- *     y luego despacha una acción para que React re-renderice con datos frescos.
- *   - Los datos vienen SIEMPRE de localStorage via getData(), nunca de estado local.
- *
- * Flujo de datos:
- *   Component → context method → service → storage.saveData() → dispatch → re-render
+ * Estado global. El backend Spring Boot es ahora la fuente de verdad;
+ * este contexto orquesta el login, mantiene el usuario actual en
+ * localStorage y refresca el cache local tras cada mutacion.
  */
 
 import {
@@ -19,6 +11,7 @@ import {
   useReducer,
   useCallback,
   useEffect,
+  useState,
   type ReactNode,
 } from 'react';
 import type {
@@ -31,22 +24,18 @@ import type {
   Appointment,
   Patient,
 } from '../types';
-import { getData } from '../data/storage';
+import { getData, hydrateAll } from '../data/storage';
 import * as appointmentService from '../services/appointments';
 import * as patientService from '../services/patients';
+import { api } from '../services/api';
 
-// ─── Estado del contexto ────────────────────────────────────────────────────
+// ─── Reducer ────────────────────────────────────────────────────────────────
 
 interface AppState {
-  /** Todos los datos persistidos (citas, pacientes, terapeutas, etc.). */
   data: AppData;
-  /** Usuario autenticado actualmente. null = no autenticado. */
   currentUser: User | null;
-  /** Vista activa en la navegación principal. */
   currentView: ViewName;
 }
-
-// ─── Acciones del reducer ───────────────────────────────────────────────────
 
 type AppAction =
   | { type: 'LOGIN'; payload: User }
@@ -54,177 +43,135 @@ type AppAction =
   | { type: 'NAVIGATE'; payload: ViewName }
   | { type: 'REFRESH_DATA' };
 
-/**
- * Reducer puro que define todas las transiciones de estado.
- * No tiene efectos secundarios — solo recalcula el estado siguiente.
- */
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
-    case 'LOGIN':
-      return { ...state, currentUser: action.payload, currentView: 'dashboard' };
-    case 'LOGOUT':
-      return { ...state, currentUser: null };
-    case 'NAVIGATE':
-      return { ...state, currentView: action.payload };
-    case 'REFRESH_DATA':
-      // Volver a leer localStorage después de cualquier mutación
-      return { ...state, data: getData() };
-    default:
-      return state;
+    case 'LOGIN':    return { ...state, currentUser: action.payload, currentView: 'dashboard' };
+    case 'LOGOUT':   return { ...state, currentUser: null };
+    case 'NAVIGATE': return { ...state, currentView: action.payload };
+    case 'REFRESH_DATA': return { ...state, data: getData() };
+    default: return state;
   }
 }
 
-// ─── Valor del contexto (API pública) ───────────────────────────────────────
+// ─── Context API ────────────────────────────────────────────────────────────
 
 interface AppContextValue {
-  // Estado
   data: AppData;
   currentUser: User | null;
   currentView: ViewName;
-
-  // Autenticación
-  /** Intenta autenticar. Devuelve true si las credenciales son correctas. */
-  login: (email: string, password: string) => boolean;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-
-  // Navegación
   navigate: (view: ViewName) => void;
-
-  // Mutaciones de citas — cada una llama al servicio y luego hace REFRESH_DATA
-  /**
-   * Crea una nueva cita (RF-01). La validación debe realizarse ANTES de llamar
-   * a esta función (en el componente de wizard, paso 3).
-   */
-  createAppointment: (input: CreateAppointmentInput) => Appointment;
-
-  /**
-   * Cancela una cita (RF-09). Solo citas con statusId=1 pueden cancelarse.
-   * La cita no se elimina; cambia a statusId=2.
-   */
-  cancelAppointment: (appointmentId: number, reason: string) => void;
-
-  /** Marca una cita como completada (statusId=4). Solo desde statusId=1. */
-  completeAppointment: (appointmentId: number) => void;
-
-  /**
-   * Reprograma una cita (RF-08). Archiva la original (statusId=3) y crea una nueva.
-   * La validación con `excludeAppointmentId` debe realizarse ANTES de llamar esto.
-   */
-  rescheduleAppointment: (originalId: number, input: RescheduleInput) => Appointment;
-
-  // Mutaciones de pacientes
-  /**
-   * Crea un paciente nuevo y genera su folio (RF-04).
-   * Se llama durante el wizard de nueva cita cuando el paciente es de primera vez.
-   */
-  createPatient: (input: NewPatientInput) => Patient;
-
-  /** Fuerza re-lectura del store (útil después de resetToSeed en dev). */
-  refresh: () => void;
+  createAppointment:     (input: CreateAppointmentInput) => Promise<Appointment>;
+  cancelAppointment:     (appointmentId: number, reason: string) => Promise<void>;
+  completeAppointment:   (appointmentId: number) => Promise<void>;
+  rescheduleAppointment: (originalId: number, input: RescheduleInput) => Promise<Appointment>;
+  createPatient:         (input: NewPatientInput) => Promise<Patient>;
+  refresh: () => Promise<void>;
 }
-
-// ─── Creación del contexto ──────────────────────────────────────────────────
 
 const AppContext = createContext<AppContextValue | null>(null);
 
 // ─── Provider ───────────────────────────────────────────────────────────────
 
-/**
- * Proveedor del estado global. Envuelve toda la aplicación en main.tsx.
- * Inicializa el estado leyendo localStorage al montar.
- */
+const STORAGE_USER_KEY = 'currentUser';
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, {
     data: getData(),
     currentUser: null,
     currentView: 'dashboard',
   });
+  const [loading, setLoading] = useState(false);
 
-  // Re-leer datos al montar (por si otra pestaña los modificó)
+  // Restaurar sesion previa al cargar y traer datos del backend.
   useEffect(() => {
+    const raw = localStorage.getItem(STORAGE_USER_KEY);
+    if (raw) {
+      try {
+        const u = JSON.parse(raw) as User;
+        dispatch({ type: 'LOGIN', payload: u });
+        setLoading(true);
+        hydrateAll()
+          .then(() => dispatch({ type: 'REFRESH_DATA' }))
+          .finally(() => setLoading(false));
+      } catch {
+        localStorage.removeItem(STORAGE_USER_KEY);
+      }
+    }
+  }, []);
+
+  const refresh = useCallback(async () => {
+    await hydrateAll();
     dispatch({ type: 'REFRESH_DATA' });
   }, []);
 
-  // ── Autenticación ──────────────────────────────────────────────────────
-
-  const login = useCallback((email: string, password: string): boolean => {
-    const user = state.data.users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (user) {
-      dispatch({ type: 'LOGIN', payload: user });
-      return true;
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+    let user: User;
+    try {
+      user = await api.login(email, password);
+    } catch (err: any) {
+      // 401/404 = credenciales invalidas (esperado). Cualquier otra cosa
+      // (fetch falla, 5xx, etc) se propaga para que el caller pueda
+      // mostrar un mensaje diferente al usuario.
+      if (err?.status === 401 || err?.status === 404) return false;
+      throw err;
     }
-    return false;
-  }, [state.data.users]);
-
-  const logout = useCallback(() => {
-    dispatch({ type: 'LOGOUT' });
+    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
+    dispatch({ type: 'LOGIN', payload: user });
+    setLoading(true);
+    try {
+      await hydrateAll();
+      dispatch({ type: 'REFRESH_DATA' });
+    } finally {
+      setLoading(false);
+    }
+    return true;
   }, []);
 
-  // ── Navegación ─────────────────────────────────────────────────────────
+  const logout = useCallback(() => {
+    localStorage.removeItem(STORAGE_USER_KEY);
+    dispatch({ type: 'LOGOUT' });
+  }, []);
 
   const navigate = useCallback((view: ViewName) => {
     dispatch({ type: 'NAVIGATE', payload: view });
   }, []);
 
-  // ── Mutaciones de citas ────────────────────────────────────────────────
+  const createAppointment = useCallback(async (input: CreateAppointmentInput) => {
+    const a = await appointmentService.createAppointment(input);
+    dispatch({ type: 'REFRESH_DATA' });
+    return a;
+  }, []);
 
-  const createAppointment = useCallback(
-    (input: CreateAppointmentInput): Appointment => {
-      const appt = appointmentService.createAppointment(input, state.currentUser!.id);
-      dispatch({ type: 'REFRESH_DATA' });
-      return appt;
-    },
-    [state.currentUser]
-  );
-
-  const cancelAppointment = useCallback(
-    (appointmentId: number, reason: string): void => {
-      appointmentService.cancelAppointment(appointmentId, reason, state.currentUser!.id);
-      dispatch({ type: 'REFRESH_DATA' });
-    },
-    [state.currentUser]
-  );
-
-  const completeAppointment = useCallback(
-    (appointmentId: number): void => {
-      appointmentService.completeAppointment(appointmentId, state.currentUser!.id);
-      dispatch({ type: 'REFRESH_DATA' });
-    },
-    [state.currentUser]
-  );
-
-  const rescheduleAppointment = useCallback(
-    (originalId: number, input: RescheduleInput): Appointment => {
-      const newAppt = appointmentService.rescheduleAppointment(originalId, input, state.currentUser!.id);
-      dispatch({ type: 'REFRESH_DATA' });
-      return newAppt;
-    },
-    [state.currentUser]
-  );
-
-  // ── Mutaciones de pacientes ────────────────────────────────────────────
-
-  const createPatient = useCallback(
-    (input: NewPatientInput): Patient => {
-      const patient = patientService.createPatient(input, state.currentUser!.id);
-      dispatch({ type: 'REFRESH_DATA' });
-      return patient;
-    },
-    [state.currentUser]
-  );
-
-  const refresh = useCallback(() => {
+  const cancelAppointment = useCallback(async (id: number, reason: string) => {
+    await appointmentService.cancelAppointment(id, reason);
     dispatch({ type: 'REFRESH_DATA' });
   }, []);
 
-  // ── Valor del contexto ─────────────────────────────────────────────────
+  const completeAppointment = useCallback(async (id: number) => {
+    await appointmentService.completeAppointment(id);
+    dispatch({ type: 'REFRESH_DATA' });
+  }, []);
+
+  const rescheduleAppointment = useCallback(async (id: number, input: RescheduleInput) => {
+    const a = await appointmentService.rescheduleAppointment(id, input);
+    dispatch({ type: 'REFRESH_DATA' });
+    return a;
+  }, []);
+
+  const createPatient = useCallback(async (input: NewPatientInput) => {
+    const p = await patientService.createPatient(input);
+    dispatch({ type: 'REFRESH_DATA' });
+    return p;
+  }, []);
 
   const value: AppContextValue = {
     data: state.data,
     currentUser: state.currentUser,
     currentView: state.currentView,
+    loading,
     login,
     logout,
     navigate,
@@ -239,16 +186,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-// ─── Hook de acceso ─────────────────────────────────────────────────────────
-
-/**
- * Hook para acceder al contexto de la aplicación desde cualquier componente.
- * Lanza un error descriptivo si se usa fuera del AppProvider.
- */
 export function useApp(): AppContextValue {
   const ctx = useContext(AppContext);
-  if (!ctx) {
-    throw new Error('useApp debe usarse dentro de <AppProvider>');
-  }
+  if (!ctx) throw new Error('useApp debe usarse dentro de <AppProvider>');
   return ctx;
 }

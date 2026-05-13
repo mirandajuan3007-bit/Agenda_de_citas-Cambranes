@@ -1,66 +1,66 @@
 /**
  * @file data/storage.ts
- * Capa de acceso a datos usando localStorage como almacenamiento persistente.
+ * Cache en memoria de la aplicacion.
  *
- * Simula el rol de la base de datos PostgreSQL descrita en el diseño.
- * Toda lectura y escritura de datos del sistema pasa por este módulo.
- *
- * Patrón: getData() + saveData(). Los servicios llaman a getData(), mutan
- * el objeto en memoria y luego llaman a saveData() para persistir.
+ * Cuando la API remota existe, hydrateAll() la usa como fuente de verdad.
+ * Si la API no esta disponible, el cliente cae en modo demo local y este
+ * cache se alimenta desde localStorage usando los datos sembrados.
  */
 
 import type { AppData } from '../types';
-import { SEED_DATA } from './seed';
+import { api } from '../services/api';
+import { initLocalData, writeLocalData } from '../services/localApi';
 
-/** Clave usada en localStorage. Cambiarla limpia todos los datos. */
-const STORAGE_KEY = 'agenda_cambranes_v1';
+const EMPTY: AppData = {
+  users: [],
+  patients: [],
+  therapists: [],
+  rooms: [],
+  appointmentStatuses: [],
+  sessionTypes: [],
+  appointments: [],
+  auditLogs: [],
+  nextPatientId: 1,
+  nextAppointmentId: 1,
+  nextAuditId: 1,
+};
 
-/**
- * Inicializa el store si no existe todavía.
- * Debe llamarse una vez al arrancar la aplicación (en main.tsx).
- * Si ya hay datos guardados, no los sobreescribe.
- */
-export function initStorage(): void {
-  if (!localStorage.getItem(STORAGE_KEY)) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DATA));
-  }
-}
+let cache: AppData = EMPTY;
 
-/**
- * Lee y parsea el store completo desde localStorage.
- *
- * Equivale a `SELECT * FROM todas_las_tablas` en una base de datos relacional.
- * Los servicios llaman a esta función al inicio de cada operación para obtener
- * el estado actual de los datos.
- *
- * @throws Si localStorage no está disponible (SSR, contexto restringido).
- */
-export function getData(): AppData {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    // Fallback: si alguien borró manualmente el key, reiniciar con seed
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DATA));
-    return { ...SEED_DATA };
-  }
-  return JSON.parse(raw) as AppData;
-}
+/** Lectura sincrona del cache. */
+export function getData(): AppData { return cache; }
 
-/**
- * Serializa y guarda el store completo en localStorage.
- *
- * Equivale a hacer COMMIT de una transacción. Los servicios llaman a esta
- * función después de cada mutación para persistir los cambios.
- *
- * @param data - Estado completo del store a guardar
- */
+/** Mutacion local (raro; se usa en pruebas y para forzar refresco). */
 export function saveData(data: AppData): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  cache = data;
+  writeLocalData(data);
 }
 
-/**
- * Restablece el store a los datos iniciales (seed).
- * Útil para desarrollo y pruebas. No debe exponerse en producción.
- */
-export function resetToSeed(): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DATA));
+/** Inicializa el cache leyendo el estado actual del backend. */
+export async function hydrateAll(): Promise<AppData> {
+  const [patients, therapists, rooms, sessionTypes, appointmentStatuses, appointments] =
+    await Promise.all([
+      api.patients(),
+      api.therapists(),
+      api.rooms(),
+      api.sessionTypes(),
+      api.appointmentStatuses(),
+      api.appointments(),
+    ]);
+
+  cache = {
+    ...cache,
+    patients,
+    therapists,
+    rooms,
+    sessionTypes,
+    appointmentStatuses,
+    appointments,
+  };
+  return cache;
+}
+
+/** Inicializa el cache desde el store local del demo. */
+export function initStorage(): void {
+  cache = initLocalData();
 }
