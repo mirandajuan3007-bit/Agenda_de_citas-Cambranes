@@ -143,6 +143,41 @@ Este documento concentra, por rango de fechas, las tareas realizadas en cada sem
 
 ---
 
+## 6. Semana del 2026-05-10 al 2026-05-14
+
+### Tareas realizadas (Pull Requests fusionados en la semana)
+
+- **PR #83 — Feature/diseño verificación** (danicauich3): mejoras de diseño y verificación visual integradas a la rama principal.
+- **PR #81 — Feat/weekly report** (Cesar Dzul): script `generate_weekly_report` y generación de los reportes semanales y del resumen consolidado de avances.
+- **PR #78 — Reorganización/estructura archivos y actualización del README** (Fredi Abio): nueva estructura de carpetas del repositorio y README actualizado.
+- **PR #77 — La versión última del proyecto, con código listo para correr** (Juan Hernández Miranda): integración del código ejecutable del proyecto.
+
+### Ponderación semanal por integrante
+
+| Integrante | % de avance semanal | Commits útiles | Líneas cambiadas | PRs fusionados | Actividad destacada |
+| --- | --- | --- | --- | --- | --- |
+| Juan Hernández Miranda | 41.4 % | 1 | 4238 | 1 | PR #77 La versión última del proyecto, con código listo para correr |
+| Cesar Dzul | 24.7 % | 2 | 472 | 1 | PR #81 Feat/weekly report (script de bitácora semanal y resumen consolidado) |
+| Fredi Abio | 8.4 % | 2 | 128 | 1 | PR #78 Reorganización/estructura archivos y actualización del README |
+| danicauich3 | 6.2 % | 0 | 0 | 1 | PR #83 Feature/diseño verificación |
+
+> Nota: solo se consideran como actividad de la semana los pull requests fusionados en el rango. Los cierres de issues que arrastraban trabajo de semanas anteriores quedan reflejados en sus respectivos resúmenes previos.
+
+### Contribución al avance del proyecto
+
+- Semana de **integración final del código y reorganización del repositorio**:
+  - Juan Hernández Miranda integró la **versión última del proyecto lista para correr** (PR #77), aportando el grueso de líneas cambiadas en la semana.
+  - Fredi Abio reorganizó la **estructura de carpetas** y actualizó el README para reflejar el nuevo orden del repositorio (PR #78).
+  - Cesar Dzul incorporó el script `generate_weekly_report` y generó los **reportes semanales** y este **resumen consolidado** (PR #81).
+  - danicauich3 sumó mejoras de **diseño y verificación** (PR #83).
+- El proyecto cierra la semana en **100 % de cobertura**:
+  - **Issues cerradas: 39/39 (100 %)**.
+  - **RF con documento, diagrama y diseño: 11/11 (100 %)** cada uno.
+  - **RNF cerrados: 12/12 (100 %)**.
+- La semana cierra con el proyecto en estado **operativo, ejecutable y completamente documentado**, con código integrado, estructura del repositorio reorganizada y un sistema de bitácoras semanales automatizado.
+
+---
+
 ## Visión general del progreso acumulado
 
 | Periodo | Issues cerradas (acumulado) | RF cerrados | RNF cerrados | RF con diseño | Hito principal |
@@ -152,5 +187,6 @@ Este documento concentra, por rango de fechas, las tareas realizadas en cada sem
 | 17 – 23 abr 2026 | 36/36 (100 %) | 11/11 | 12/12 | 3/11 | Diseño de Base de Datos y contexto IA |
 | 24 – 30 abr 2026 | 36/36 (100 %) | 11/11 | 12/12 | 3/11 | Apertura del frente de validación integral |
 | 01 – 09 may 2026 | 36/36 (100 %) | 11/11 | 12/12 | 11/11 | Diagrama de clases, MER y validación completa |
+| 10 – 14 may 2026 | 39/39 (100 %) | 11/11 | 12/12 | 11/11 | Integración de la versión ejecutable, reorganización del repo y bitácoras automatizadas |
 
-El proyecto evolucionó de manera ordenada desde la **definición conceptual** (marzo), pasó por la **documentación funcional y no funcional** (abril temprano), continuó con el **modelado de datos y diseño técnico** (abril medio), abrió el **frente de validación** (abril final) y cerró con la **entrega de todos los artefactos de diseño y validación** (mayo).
+El proyecto evolucionó de manera ordenada desde la **definición conceptual** (marzo), pasó por la **documentación funcional y no funcional** (abril temprano), continuó con el **modelado de datos y diseño técnico** (abril medio), abrió el **frente de validación** (abril final), cerró con la **entrega de todos los artefactos de diseño y validación** (inicios de mayo) y culminó la primera quincena de mayo con la **integración del código ejecutable, la reorganización del repositorio y la automatización de los reportes semanales**, alcanzando el 100 % de cobertura en todos los indicadores del proyecto.
