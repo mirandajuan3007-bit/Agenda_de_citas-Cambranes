@@ -27,15 +27,25 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("excludeId") Long excludeId
     );
 
+    // JOIN FETCH evita N+1 al serializar el DTO: el mapper accede a
+    // patient/therapist/room/sessionType inmediatamente despues.
     @Query("""
-        SELECT a FROM Appointment a
+        SELECT DISTINCT a FROM Appointment a
+        JOIN FETCH a.patient
+        JOIN FETCH a.therapist
+        JOIN FETCH a.room
+        JOIN FETCH a.sessionType
         WHERE a.startAt >= :from AND a.startAt < :to
         ORDER BY a.startAt ASC
     """)
     List<Appointment> findInRange(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Query("""
-        SELECT a FROM Appointment a
+        SELECT DISTINCT a FROM Appointment a
+        JOIN FETCH a.patient
+        JOIN FETCH a.therapist
+        JOIN FETCH a.room
+        JOIN FETCH a.sessionType
         WHERE a.patient.id = :patientId
         ORDER BY a.startAt DESC
     """)

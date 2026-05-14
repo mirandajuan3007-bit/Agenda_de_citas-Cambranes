@@ -12,7 +12,7 @@ public record CreateAppointmentRequest(
         @NotNull Short sessionTypeId,
         @NotNull LocalDateTime startAt,
         @NotNull @Min(15) @Max(240) Integer durationMinutes,
-        String comments,
-        BigDecimal cuota,
-        String paymentProofPath
+        @Size(max = 2000, message = "Los comentarios no pueden exceder 2000 caracteres.") String comments,
+        @PositiveOrZero(message = "La cuota no puede ser negativa.") BigDecimal cuota,
+        @Size(max = 500, message = "La ruta del comprobante no puede exceder 500 caracteres.") String paymentProofPath
 ) {}

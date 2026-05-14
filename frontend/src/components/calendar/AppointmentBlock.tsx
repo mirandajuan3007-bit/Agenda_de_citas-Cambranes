@@ -14,6 +14,7 @@
  *   - RESCHEDULED → ámbar translúcido
  */
 
+import { memo } from 'react';
 import type { Appointment, AppData } from '../../types';
 import { isOverdue, getTopPx, getHeightPx, formatTime } from '../../utils/helpers';
 import type { AppointmentLayout } from '../../utils/helpers';
@@ -43,7 +44,7 @@ function getBlockClass(appt: Appointment, now: Date): string {
 }
 
 /** Bloque individual de cita posicionado absolutamente en la columna del día. */
-export function AppointmentBlock({ layout, data, now, gapPx = 3, onClick }: AppointmentBlockProps) {
+function AppointmentBlockImpl({ layout, data, now, gapPx = 3, onClick }: AppointmentBlockProps) {
   const { appointment: a, leftPct, widthPct } = layout;
   const patient = data.patients.find((p) => p.id === a.patientId);
   const top = getTopPx(a.startAt);
@@ -72,3 +73,17 @@ export function AppointmentBlock({ layout, data, now, gapPx = 3, onClick }: Appo
     </div>
   );
 }
+
+// Memoizado: solo re-renderiza si cambia la cita, sus dimensiones de layout,
+// la hora "ahora" o el handler de click. Importante cuando hay 50+ citas
+// en la semana visible.
+export const AppointmentBlock = memo(
+  AppointmentBlockImpl,
+  (prev, next) =>
+    prev.layout.appointment === next.layout.appointment &&
+    prev.layout.leftPct === next.layout.leftPct &&
+    prev.layout.widthPct === next.layout.widthPct &&
+    prev.now.getTime() === next.now.getTime() &&
+    prev.data === next.data &&
+    prev.onClick === next.onClick
+);

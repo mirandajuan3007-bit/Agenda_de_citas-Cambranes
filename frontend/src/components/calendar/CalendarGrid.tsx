@@ -23,7 +23,7 @@
  *   divide el ancho de la columna entre citas que se solapan.
  */
 
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import type { Appointment, AppData } from '../../types';
 import {
   WORK_START_MIN,
@@ -130,7 +130,7 @@ interface DayColumnProps {
  * Al hacer click en área vacía, calcula la hora según la posición Y
  * del click y la pasa a onClickSlot para pre-rellenar el modal.
  */
-function DayColumn({ dateStr, isToday, appointments, data, now, onViewAppointment, onClickSlot }: DayColumnProps) {
+function DayColumnImpl({ dateStr, isToday, appointments, data, now, onViewAppointment, onClickSlot }: DayColumnProps) {
   const layouts = useMemo(() => computeCalendarLayout(appointments), [appointments]);
 
   /** Convierte la posición Y del click a string 'HH:MM' redondeado a 30 min. */
@@ -169,6 +169,8 @@ function DayColumn({ dateStr, isToday, appointments, data, now, onViewAppointmen
     </div>
   );
 }
+
+const DayColumn = memo(DayColumnImpl);
 
 // ─── Cabecera de días ────────────────────────────────────────────────────────
 

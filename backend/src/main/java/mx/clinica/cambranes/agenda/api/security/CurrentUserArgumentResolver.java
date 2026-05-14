@@ -1,5 +1,6 @@
 package mx.clinica.cambranes.agenda.api.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import mx.clinica.cambranes.agenda.domain.model.User;
 import mx.clinica.cambranes.agenda.service.AuthService;
@@ -12,9 +13,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Resuelve el usuario actual leyendo el header X-User-Id que envia el frontend
- * tras hacer login. Es una autenticacion deliberadamente simple — suficiente
- * para el contexto administrativo cerrado del modulo.
+ * Resuelve el usuario actual a partir del atributo de request que el
+ * JwtAuthFilter coloca tras validar el token JWT.
+ *
+ * Conserva como fallback la lectura del header X-User-Id para mantener el
+ * modo demo local del frontend mientras el equipo termina la migracion.
  */
 @Component
 @RequiredArgsConstructor
@@ -31,14 +34,22 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest req, WebDataBinderFactory binderFactory) {
-        String header = req.getHeader("X-User-Id");
-        if (header == null || header.isBlank()) {
-            throw new NotFoundException("Falta el header X-User-Id.");
+        HttpServletRequest http = (HttpServletRequest) req.getNativeRequest();
+        Long userId = (Long) http.getAttribute(JwtAuthFilter.USER_ID_ATTRIBUTE);
+
+        if (userId == null) {
+            // Fallback de transicion: el frontend antiguo manda X-User-Id sin token.
+            String legacy = req.getHeader("X-User-Id");
+            if (legacy != null && !legacy.isBlank()) {
+                try {
+                    userId = Long.parseLong(legacy);
+                } catch (NumberFormatException ignored) { /* sigue al throw */ }
+            }
         }
-        try {
-            return authService.getById(Long.parseLong(header));
-        } catch (NumberFormatException e) {
-            throw new NotFoundException("X-User-Id invalido.");
+
+        if (userId == null) {
+            throw new NotFoundException("Token de autenticacion ausente o invalido.");
         }
+        return authService.getById(userId);
     }
 }
