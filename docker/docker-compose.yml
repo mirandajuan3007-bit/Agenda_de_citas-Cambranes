@@ -21,7 +21,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ../backend
     container_name: agenda-backend
     restart: unless-stopped
     depends_on:
@@ -38,7 +38,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
     container_name: agenda-frontend
     restart: unless-stopped
     depends_on:
