@@ -17,6 +17,8 @@ REQUIREMENTS_DIR = ROOT / "docs" / "02_requirements"
 MODELING_DIR = ROOT / "docs" / "03_modeling"
 DESIGN_DIR = ROOT / "docs" / "04_design"
 PROTOTYPES_DIR = ROOT / "prototypes"
+TESTS_DIR = ROOT / "docs" / "06_pruebas_funcionales"
+VALIDATION_DIR = ROOT / "docs" / "06_validation"
 LOGS_DIR = ROOT / "logs"
 
 RF_RE = re.compile(r"\bRF\s*(?:-\s*)?(\d{1,2})\b", re.IGNORECASE)
@@ -315,17 +317,23 @@ def collect_local_artifacts(branch: str | None = None) -> dict[str, set[int]]:
         modeling = [str(path.relative_to(ROOT)) for path in MODELING_DIR.glob("rf*.*")]
         design = [str(path.relative_to(ROOT)) for path in DESIGN_DIR.glob("*.*")]
         prototypes = [str(path.relative_to(ROOT)) for path in PROTOTYPES_DIR.glob("rf*.*")]
+        tests = [str(path.relative_to(ROOT)) for path in TESTS_DIR.glob("*.*")] if TESTS_DIR.exists() else []
+        validation = [str(path.relative_to(ROOT)) for path in VALIDATION_DIR.glob("*.*")] if VALIDATION_DIR.exists() else []
     else:
         requirements = [path for path in tracked_files if path.startswith("docs/02_requirements/") and path.endswith(".md")]
         modeling = [path for path in tracked_files if path.startswith("docs/03_modeling/")]
         design = [path for path in tracked_files if path.startswith("docs/04_design/")]
         prototypes = [path for path in tracked_files if path.startswith("prototypes/")]
+        tests = [path for path in tracked_files if path.startswith("docs/06_pruebas_funcionales/")]
+        validation = [path for path in tracked_files if path.startswith("docs/06_validation/")]
 
     return {
         "requirements": extract_rf_numbers(requirements),
         "modeling": extract_rf_numbers(modeling),
         "design": extract_rf_numbers(design),
         "prototypes": extract_rf_numbers(prototypes),
+        "tests_count": len(tests),
+        "validation_count": len(validation),
     }
 
 
@@ -521,6 +529,8 @@ def compute_progress(issues: list[dict], local_artifacts: dict[str, set[int]], r
         "modeling_docs": len(local_artifacts["modeling"]),
         "design_docs": len(local_artifacts["design"]),
         "prototype_docs": len(local_artifacts["prototypes"]),
+        "tests_docs": local_artifacts.get("tests_count", 0),
+        "validation_docs": local_artifacts.get("validation_count", 0),
         "rf_with_requirements": completed_rf_with_docs,
         "rf_with_modeling": completed_rf_with_modeling,
         "rf_with_design": completed_rf_with_design,
@@ -822,6 +832,8 @@ def render_report(
         f"- Diagramas en docs/03_modeling: {progress['modeling_docs']}",
         f"- Disenos en docs/04_design: {progress['design_docs']}",
         f"- Prototipos en /prototypes: {progress['prototype_docs']}",
+        f"- Pruebas funcionales en docs/06_pruebas_funcionales: {progress['tests_docs']}",
+        f"- Validacion tecnica en docs/06_validation: {progress['validation_docs']}",
         "",
         "## Observaciones automaticas",
         "",
@@ -881,3 +893,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    
