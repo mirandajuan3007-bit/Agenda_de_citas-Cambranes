@@ -1,14 +1,14 @@
-# Indice de documentacion del proyecto
+# Índice de documentación del proyecto
 
-## Proposito
+## Propósito
 
-Esta carpeta concentra la documentacion oficial del proyecto. Debe funcionar como la fuente unica de verdad del modulo de agenda. El contenido final del equipo debe vivir aqui y no en Google Docs u otras herramientas externas.
+Esta carpeta concentra la documentación oficial del proyecto. Debe funcionar como la fuente única de verdad del módulo de agenda. El contenido final del equipo debe vivir aquí y no en Google Docs u otras herramientas externas.
 
 ## Estructura oficial
 
 ### `01_problem_definition`
 
-Contiene el contexto del sistema, alcance, actores, limitaciones y reglas generales del modulo.
+Contiene el contexto del sistema, alcance, actores, limitaciones y reglas generales del módulo.
 
 Ejemplo de archivo clave:
 
@@ -18,7 +18,7 @@ Ejemplo de archivo clave:
 
 Contiene los requisitos funcionales y, cuando aplique, los entregables documentales asociados a cada RF.
 
-Convencion principal:
+Convención principal:
 
 - `rf##_requirement_description.md`
 
@@ -36,15 +36,15 @@ Ejemplos actuales:
 
 Contiene diagramas de flujo y artefactos de modelado vinculados a cada RF.
 
-Convencion principal:
+Convención principal:
 
 - `rf##_flow_diagram.ext`
 
 ### `04_design`
 
-Contiene decisiones de diseño y diseño de base de datos vinculados a requisitos o procesos del modulo.
+Contiene decisiones de diseño y diseño de base de datos vinculados a requisitos o procesos del módulo.
 
-Convencion principal:
+Convención principal:
 
 - `rf##_database_design.md`
 
@@ -52,10 +52,61 @@ Convencion principal:
 
 Espacio reservado para entregables finales o consolidaciones de cierre del proyecto.
 
+## Stack tecnológico
+
+### Sistema anterior de referencia
+
+El sistema de gestión de la clínica fue desarrollado previamente con:
+
+- **Backend:** Java con Spring Boot.
+- **Base de datos:** MySQL.
+- **Frontend:** no especificado.
+
+Este sistema funciona como punto de partida del dominio. Sus entidades, reglas de negocio y procesos sirven como base conceptual para el desarrollo del módulo de agenda.
+
+### Módulo actual: prototipo funcional
+
+El prototipo funcional del módulo de agenda fue construido con el siguiente stack:
+
+| Capa | Tecnología | Notas |
+|---|---|---|
+| Interfaz de usuario | React 18 + TypeScript 5 | SPA, es decir, una aplicación de una sola página |
+| Bundler / build | Vite 5 | Reemplazo moderno de Create React App |
+| Estado global | React Context API + useReducer | Suficiente para el alcance actual del módulo |
+| Persistencia del prototipo | localStorage del navegador | Solo para demostración; no representa persistencia real |
+| Estilos | CSS puro en `globals.css` | Sin framework de UI externo |
+| Lenguaje | TypeScript en modo estricto | Tipado completo del dominio |
+
+El uso de `localStorage` permite simular la persistencia durante la demostración del prototipo, pero no debe considerarse una solución final para producción.
+
+### Stack recomendado para producción
+
+Tomando como base el sistema anterior y el prototipo actual, el stack recomendado para una versión de producción es el siguiente:
+
+| Capa | Tecnología recomendada | Justificación |
+|---|---|---|
+| Frontend | React 18 + TypeScript | Ya fue construido en el prototipo; mantenerlo evita retrabajo |
+| Backend | Java con Spring Boot | Da continuidad al sistema anterior de la clínica |
+| Base de datos | MySQL | Ya fue usado en el sistema anterior y mantiene consistencia tecnológica |
+| Autenticación | Spring Security + JWT | Se integra de forma natural con Spring Boot |
+| ORM | Hibernate / JPA | Es una opción estándar dentro del ecosistema Spring |
+| API | REST con JSON | El frontend puede consumir datos en este formato |
+| Contenedor | Docker | Facilita el despliegue y la consistencia entre entornos |
+
+### Consideraciones para migrar el prototipo a producción
+
+La migración del prototipo funcional a una versión de producción implica principalmente:
+
+1. Reemplazar las llamadas a `localStorage` por llamadas HTTP hacia una API REST del backend.
+2. Implementar autenticación real con JWT en lugar de un login basado en comparación de texto plano.
+3. Migrar la información del prototipo hacia MySQL, siguiendo el diseño definido en `docs/04_design/`.
+4. Conectar el frontend actual con los servicios del backend.
+5. Validar que las reglas de negocio del módulo de agenda coincidan con las reglas del sistema de gestión de la clínica.
+
 ## Regla de uso
 
 - No crear archivos fuera de estas carpetas si ya existe una ruta oficial.
-- No duplicar contenido del repo en Google Docs como version principal.
+- No duplicar contenido del repositorio en Google Docs como versión principal.
 - Todo entregable debe estar vinculado a una issue, una rama y un PR.
 
 ## Flujo recomendado
@@ -63,7 +114,7 @@ Espacio reservado para entregables finales o consolidaciones de cierre del proye
 1. Crear o tomar una issue bien definida.
 2. Crear una rama desde `develop`.
 3. Trabajar el entregable en la carpeta correcta.
-4. Abrir PR hacia `develop` usando la plantilla del repo.
+4. Abrir PR hacia `develop` usando la plantilla del repositorio.
 5. Asignar un solo reviewer principal.
 6. Hacer merge y cerrar la issue.
 
@@ -71,45 +122,52 @@ Espacio reservado para entregables finales o consolidaciones de cierre del proye
 
 ### Requisito funcional
 
-Debe incluir como minimo:
+Debe incluir como mínimo:
 
-- descripcion clara
-- relacion con otros requisitos
-- logica de negocio
-- diagrama de flujo cuando aplique
-- evidencia o referencia visual cuando aplique
+- Descripción clara.
+- Relación con otros requisitos.
+- Lógica de negocio.
+- Diagrama de flujo cuando aplique.
+- Evidencia o referencia visual cuando aplique.
 
 ### Requisito no funcional
 
-Debe incluir como minimo:
+Debe incluir como mínimo:
 
-- objetivo del atributo de calidad
-- forma de representacion en el sistema
-- forma de medicion o verificacion
-- evidencia esperada
+- Objetivo del atributo de calidad.
+- Forma de representación en el sistema.
+- Forma de medición o verificación.
+- Evidencia esperada.
 
 ### Diseño
 
-Debe incluir como minimo:
+Debe incluir como mínimo:
 
-- entidades o elementos de diseño relevantes
-- consistencia con reglas del modulo
-- nomenclatura correcta
-- relacion con el RF correspondiente
+- Entidades o elementos de diseño relevantes.
+- Consistencia con las reglas del módulo.
+- Nomenclatura correcta.
+- Relación con el RF correspondiente.
 
 ## Artefactos de apoyo fuera de `docs`
 
-- `prototypes/`: prototipos visuales del modulo
-- `scripts/`: automatizaciones de seguimiento y validacion
-- `logs/`: reportes generados del proyecto
+- `prototypes/`: prototipos visuales del módulo.
+- `scripts/`: automatizaciones de seguimiento y validación.
+- `logs/`: reportes generados del proyecto.
+- `docker/`: configuración de contenedores (`docker-compose.yml`).
 
-## Gobernanza del repo
+## Documentación complementaria en `docs/`
 
-La organizacion del trabajo se refuerza con:
+- `COMO_CORRER.md`: instrucciones para levantar el proyecto localmente.
+- `CONTRIBUTING.md`: guía de contribución al repositorio.
+- `PATRONES_DE_DISEÑO.md`: patrones de diseño aplicados en el proyecto.
+
+## Gobernanza del repositorio
+
+La organización del trabajo se refuerza con:
 
 - `.github/pull_request_template.md`
 - `.github/ISSUE_TEMPLATE/`
 - `.github/CODEOWNERS`
-- `CONTRIBUTING.md`
+- `docs/CONTRIBUTING.md`
 
-Estos archivos existen para que el repo sea una herramienta real de trabajo, con trazabilidad, revision clara y medicion del avance.
+Estos archivos existen para que el repositorio funcione como una herramienta real de trabajo, con trazabilidad, revisión clara y medición del avance.
