@@ -9,9 +9,24 @@ import type { Appointment, AppointmentStatus, ConflictError, Patient, Room, Sess
 import { localApi } from './localApi';
 
 const BASE: string = (import.meta as any).env?.VITE_API_BASE_URL ?? '/api';
+const TOKEN_KEY = 'authToken';
 let connectionMode: 'unknown' | 'remote' | 'local' = 'unknown';
 
+export function setAuthToken(token: string | null) {
+  if (token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+
+export function getAuthToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
 function authHeaders(): Record<string, string> {
+  const token = getAuthToken();
+  if (token) return { Authorization: `Bearer ${token}` };
+
+  // Fallback de transicion: mientras el frontend antiguo este en uso,
+  // el backend acepta X-User-Id ademas del token.
   const raw = localStorage.getItem('currentUser');
   if (!raw) return {};
   try {
@@ -121,10 +136,18 @@ export const api = {
   async login(email: string, password: string): Promise<User> {
     return withFallback(
       async () => {
-        const dto = await request<{ id: number; email: string; fullName: string; role: string }>(
-          '/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }
-        );
-        return { id: dto.id, email: dto.email, password: '', fullName: dto.fullName, role: dto.role as any };
+        // Limpiamos cualquier token previo para que la peticion no envie
+        // un Authorization invalido (los filtros lo rechazarian).
+        setAuthToken(null);
+        const resp = await request<{
+          token: string;
+          expiresInMinutes: number;
+          user: { id: number; email: string; fullName: string; role: string };
+        }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+
+        setAuthToken(resp.token);
+        const u = resp.user;
+        return { id: u.id, email: u.email, password: '', fullName: u.fullName, role: u.role as any };
       },
       () => localApi.login(email, password)
     );

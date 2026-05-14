@@ -1,5 +1,6 @@
 package mx.clinica.cambranes.agenda.api.error;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.clinica.cambranes.agenda.domain.state.IllegalStateTransitionException;
 import mx.clinica.cambranes.agenda.domain.validation.ValidationError;
 import mx.clinica.cambranes.agenda.service.exception.BusinessRuleException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -42,9 +44,13 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(400, "Bad Request", "Datos invalidos.", details));
     }
 
+    // Loguea el detalle internamente pero devuelve mensaje generico al cliente
+    // para no filtrar nombres de tablas, queries, paths, etc.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> generic(Exception ex) {
+        log.error("Error inesperado: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiError.of(500, "Internal Server Error", ex.getMessage()));
+                .body(ApiError.of(500, "Internal Server Error",
+                        "Ocurrio un error inesperado. Intentelo de nuevo o contacte al administrador."));
     }
 }

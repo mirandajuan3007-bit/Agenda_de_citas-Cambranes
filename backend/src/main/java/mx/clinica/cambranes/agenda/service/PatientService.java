@@ -1,6 +1,9 @@
 package mx.clinica.cambranes.agenda.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mx.clinica.cambranes.agenda.api.dto.CreatePatientRequest;
 import mx.clinica.cambranes.agenda.domain.event.PatientEvent;
 import mx.clinica.cambranes.agenda.domain.model.Patient;
@@ -13,13 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PatientService {
 
     private final PatientRepository patientRepository;
     private final ApplicationEventPublisher events;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     public List<Patient> listAll() { return patientRepository.findAll(); }
@@ -49,10 +55,19 @@ public class PatientService {
         saved.setFolio(String.format(Locale.ROOT, "PAC-%04d", saved.getId()));
         Patient finalPatient = patientRepository.save(saved);
 
-        events.publishEvent(new PatientEvent(
-                finalPatient, createdBy,
-                "{\"folio\":\"" + finalPatient.getFolio() + "\"}"
-        ));
+        events.publishEvent(new PatientEvent(finalPatient, createdBy,
+                toJson(Map.of("folio", finalPatient.getFolio()))));
+        log.info("Paciente creado id={} folio={} por usuario={}",
+                finalPatient.getId(), finalPatient.getFolio(), createdBy.getId());
         return finalPatient;
+    }
+
+    private String toJson(Map<String, ?> data) {
+        try {
+            return objectMapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            log.warn("No se pudo serializar payload de auditoria: {}", e.getMessage());
+            return "{}";
+        }
     }
 }
