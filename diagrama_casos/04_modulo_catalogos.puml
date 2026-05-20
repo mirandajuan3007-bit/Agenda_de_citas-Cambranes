@@ -1,0 +1,46 @@
+@startuml Modulo_Catalogos
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+}
+skinparam actor {
+    BackgroundColor #D6EAF8
+    BorderColor #1F618D
+}
+
+title Modulo Catalogos - Casos de Uso
+
+actor "Secretaria"           as Secretaria
+actor "Coordinador\nde la clinica" as Coordinador
+
+rectangle "Modulo Catalogos" {
+    usecase "Consultar terapeutas"     as UC_Ter
+    usecase "Consultar salas"          as UC_Sala
+    usecase "Consultar tipos\nde sesion" as UC_Tipo
+    usecase "Consultar estados\nde cita" as UC_Est
+}
+
+Secretaria --> UC_Ter
+Secretaria --> UC_Sala
+Secretaria --> UC_Tipo
+Secretaria --> UC_Est
+
+Coordinador --> UC_Ter
+Coordinador --> UC_Sala
+Coordinador --> UC_Tipo
+Coordinador --> UC_Est
+
+note bottom of UC_Ter
+  Cada terapeuta tiene asignada
+  una unica sala de forma fija.
+end note
+
+note bottom of UC_Est
+  Estados posibles:
+  Programada, Cancelada,
+  Reprogramada, Finalizada.
+end note
+
+@enduml

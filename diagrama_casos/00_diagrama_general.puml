@@ -1,0 +1,75 @@
+@startuml Diagrama_General_Casos_de_Uso
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+    ArrowColor #34495E
+}
+skinparam actor {
+    BackgroundColor #D6EAF8
+    BorderColor #1F618D
+}
+
+title Modulo de Agenda - Diagrama General de Casos de Uso
+
+actor "Secretaria" as Secretaria
+actor "Coordinador\nde la clinica" as Coordinador
+
+rectangle "Sistema de Agenda" {
+
+    package "Modulo Autenticacion" #EAF2F8 {
+        usecase "Iniciar sesion" as UC_Login
+        usecase "Cerrar sesion" as UC_Logout
+    }
+
+    package "Modulo Pacientes" #EAFAF1 {
+        usecase "Dar de alta\npaciente"           as UC_AltaP   <<RF-05>>
+        usecase "Buscar paciente"                 as UC_BuscarP
+        usecase "Consultar historial\nde paciente" as UC_HistP   <<RF-05>>
+    }
+
+    package "Modulo Citas" #FEF5E7 {
+        usecase "Agendar cita"        as UC_Agendar   <<RF-01>>
+        usecase "Consultar agenda"    as UC_Consultar <<RF-06>>
+        usecase "Reprogramar cita"    as UC_Reprog    <<RF-08>>
+        usecase "Cancelar cita"       as UC_Cancel    <<RF-09>>
+        usecase "Marcar como\nfinalizada" as UC_Final
+        usecase "Resaltar citas\natrasadas" as UC_Atras <<RF-07>>
+    }
+
+    package "Modulo Catalogos" #FDEDEC {
+        usecase "Consultar catalogos" as UC_Cat
+    }
+}
+
+Secretaria --> UC_Login
+Secretaria --> UC_Logout
+Secretaria --> UC_AltaP
+Secretaria --> UC_BuscarP
+Secretaria --> UC_HistP
+Secretaria --> UC_Agendar
+Secretaria --> UC_Consultar
+Secretaria --> UC_Reprog
+Secretaria --> UC_Cancel
+Secretaria --> UC_Final
+Secretaria --> UC_Cat
+
+Coordinador --> UC_Login
+Coordinador --> UC_Logout
+Coordinador --> UC_Consultar
+Coordinador --> UC_HistP
+Coordinador --> UC_Cat
+
+UC_Atras  ..> UC_Consultar : <<extend>>
+UC_Agendar ..> UC_Cat      : <<include>>
+UC_Reprog  ..> UC_Consultar : <<include>>
+
+note bottom of UC_Cat
+  El modulo Catalogos provee
+  terapeutas, salas, tipos de
+  sesion y estados al resto
+  del sistema.
+end note
+
+@enduml

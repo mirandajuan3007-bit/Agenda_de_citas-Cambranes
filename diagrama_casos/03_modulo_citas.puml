@@ -1,0 +1,78 @@
+@startuml Modulo_Citas
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+}
+skinparam actor {
+    BackgroundColor #D6EAF8
+    BorderColor #1F618D
+}
+
+title Modulo Citas - Casos de Uso
+
+actor "Secretaria" as Secretaria
+actor "Coordinador\nde la clinica" as Coordinador
+
+rectangle "Modulo Citas" {
+    usecase "Agendar cita"                as UC_Agendar <<RF-01>>
+    usecase "Agendar evaluacion\ninicial" as UC_Eval
+    usecase "Agendar sesion\nterapeutica" as UC_Ses
+
+    usecase "Confirmar cita\n(resumen previo)" as UC_Resumen  <<RF-02>>
+    usecase "Verificar disponibilidad"         as UC_Validar  <<RF-03>>
+    usecase "Registrar en historial"           as UC_Hist     <<RF-05>>
+
+    usecase "Consultar agenda"                 as UC_Consultar
+    usecase "Ver detalle de cita"              as UC_Detalle  <<RF-06>>
+    usecase "Resaltar citas\natrasadas"        as UC_Atras    <<RF-07>>
+
+    usecase "Reprogramar cita"                 as UC_Reprog   <<RF-08>>
+    usecase "Cancelar cita"                    as UC_Cancel   <<RF-09>>
+    usecase "Marcar como\nfinalizada"          as UC_Final
+}
+
+Secretaria --> UC_Agendar
+Secretaria --> UC_Consultar
+Secretaria --> UC_Reprog
+Secretaria --> UC_Cancel
+Secretaria --> UC_Final
+Coordinador --> UC_Consultar
+
+UC_Eval --|> UC_Agendar
+UC_Ses  --|> UC_Agendar
+
+UC_Agendar ..> UC_Validar : <<include>>
+UC_Agendar ..> UC_Resumen : <<include>>
+UC_Agendar ..> UC_Hist    : <<include>>
+
+UC_Reprog ..> UC_Detalle  : <<include>>
+UC_Reprog ..> UC_Validar  : <<include>>
+UC_Cancel ..> UC_Detalle  : <<include>>
+UC_Final  ..> UC_Detalle  : <<include>>
+
+UC_Detalle ..> UC_Consultar : <<extend>>
+UC_Atras   ..> UC_Consultar : <<extend>>
+
+note right of UC_Validar
+  Cadena de validacion:
+  1) Horario laboral (L-V 09:00-17:30)
+  2) Solape de terapeuta, sala y paciente
+  3) Maximo 3 citas activas por paciente
+end note
+
+note bottom of UC_Atras
+  Alerta visual cuando la hora actual
+  supera el inicio de una cita aun
+  programada. No modifica el estado
+  en base de datos.
+end note
+
+note top of UC_Reprog
+  La cita original se archiva
+  (estado RESCHEDULED) y se crea
+  una nueva con los datos heredados.
+end note
+
+@enduml

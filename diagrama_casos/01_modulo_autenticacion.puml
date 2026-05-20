@@ -1,0 +1,39 @@
+@startuml Modulo_Autenticacion
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+}
+skinparam actor {
+    BackgroundColor #D6EAF8
+    BorderColor #1F618D
+}
+
+title Modulo Autenticacion - Casos de Uso
+
+actor "Secretaria" as Secretaria
+actor "Coordinador\nde la clinica" as Coordinador
+
+rectangle "Modulo Autenticacion" {
+    usecase "Iniciar sesion"        as UC_Login
+    usecase "Cerrar sesion"         as UC_Logout
+    usecase "Validar credenciales"  as UC_Valid
+    usecase "Restaurar sesion\nprevia" as UC_Restore
+}
+
+Secretaria --> UC_Login
+Secretaria --> UC_Logout
+Coordinador --> UC_Login
+Coordinador --> UC_Logout
+
+UC_Login   ..> UC_Valid : <<include>>
+UC_Restore ..> UC_Valid : <<include>>
+
+note bottom of UC_Valid
+  Compara la contraseña ingresada
+  contra el hash BCrypt almacenado
+  para el correo proporcionado.
+end note
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml Modulo_Pacientes
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+}
+skinparam actor {
+    BackgroundColor #D6EAF8
+    BorderColor #1F618D
+}
+
+title Modulo Pacientes - Casos de Uso
+
+actor "Secretaria" as Secretaria
+actor "Coordinador\nde la clinica" as Coordinador
+
+rectangle "Modulo Pacientes" {
+    usecase "Dar de alta\npaciente"            as UC_Alta   <<RF-05>>
+    usecase "Asignar identificador\nunico"     as UC_Folio  <<RF-04>>
+    usecase "Buscar paciente"                  as UC_Buscar
+    usecase "Consultar historial\nde paciente" as UC_Hist   <<RF-05>>
+    usecase "Listar pacientes"                 as UC_Listar
+}
+
+Secretaria --> UC_Alta
+Secretaria --> UC_Buscar
+Secretaria --> UC_Hist
+Secretaria --> UC_Listar
+
+Coordinador --> UC_Hist
+Coordinador --> UC_Listar
+Coordinador --> UC_Buscar
+
+UC_Alta ..> UC_Folio : <<include>>
+
+note bottom of UC_Folio
+  Genera el folio "PAC-####" usando
+  el ID asignado por la base de datos.
+  El folio es permanente e irrepetible.
+end note
+
+note right of UC_Hist
+  Devuelve las citas del paciente
+  en orden cronologico descendente,
+  incluyendo las archivadas
+  (canceladas y reprogramadas).
+end note
+
+@enduml
