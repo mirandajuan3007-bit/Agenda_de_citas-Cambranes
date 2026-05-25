@@ -1,6 +1,7 @@
 # RNF-03. Documentación del sistema y soporte operativo
 
 ## Descripción
+
 El sistema deberá contar con documentación técnica y de usuario clara, actualizada y accesible para facilitar su uso, mantenimiento y evolución.
 
 La documentación deberá cubrir el funcionamiento general del sistema, el uso de sus principales módulos y la descripción técnica de los componentes necesarios para tareas de mantenimiento o futuras mejoras.
@@ -14,11 +15,13 @@ El alcance de este requisito contempla la disponibilidad y calidad de la documen
 ---
 
 ## Categoría
+
 Mantenibilidad y soporte operativo
 
 ---
 
 ## Objetivo del requisito
+
 Garantizar que el sistema disponga de documentación técnica y de usuario suficiente, clara y actualizada para facilitar su comprensión, operación, mantenimiento y evolución.
 
 ---
@@ -31,7 +34,8 @@ Personal técnico o usuario administrativo necesita consultar información sobre
 **Estímulo:**  
 Se requiere utilizar, mantener, revisar o actualizar algún módulo, componente o proceso del sistema.
 
-**Respuesta esperada:**  
+**Respuesta esperada:** 
+ 
 - La documentación está disponible y es accesible.
 - Existe una descripción general del sistema y de sus módulos principales.
 - El personal técnico puede consultar información sobre endpoints y componentes relevantes.

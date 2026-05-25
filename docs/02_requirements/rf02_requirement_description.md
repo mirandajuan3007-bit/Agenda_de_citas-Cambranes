@@ -40,8 +40,8 @@ Este resumen permite al personal administrativo verificar la información ingres
 
 - RF‑01. Registrar cita  
 - RF‑03. Validar disponibilidad de recursos  
-- RF‑04. Generar ID de cita  
-- RF‑05. Visualizar citas en calendario  
+- RF‑04. Generación automática de ID de paciente
+- RF‑05. Guardar datos del paciente e historial
 
 ### Relación
 
@@ -54,7 +54,7 @@ El requisito RF‑02 depende del registro previo de los datos de la cita y actú
 ### Reglas de Negocio
 
 - La cita no puede confirmarse sin que el usuario revise el resumen final.
-- El estado inicial de la cita al confirmarse debe ser “Pendiente”.
+- El estado inicial de la cita al confirmarse debe ser “Programada”.
 - El identificador único de la cita se genera únicamente al confirmar la información.
 - Si el usuario regresa a editar los datos, la información capturada no debe perderse.
 - El resumen debe reflejar exactamente los datos ingresados en el formulario.

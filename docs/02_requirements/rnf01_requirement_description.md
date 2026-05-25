@@ -1,6 +1,7 @@
 # RNF-01. Consistencia e integridad transaccional
 
 ## Descripción
+
 El sistema deberá garantizar que las operaciones de registro, edición, actualización y almacenamiento de información se ejecuten de forma completa y controlada.
 
 Cuando una operación involucre cambios en los datos, el sistema deberá evitar que se guarden resultados parciales, incompletos o inconsistentes en caso de error durante el proceso.
@@ -14,11 +15,13 @@ El alcance de este requisito se centra en la consistencia de los datos durante o
 ---
 
 ## Categoría
+
 Confiabilidad e integridad de datos
 
 ---
 
 ## Objetivo del requisito
+
 Garantizar que las operaciones de modificación y almacenamiento de datos se realicen de forma completa, evitando estados intermedios, registros parciales o inconsistencias en la información del sistema.
 
 ---
@@ -32,6 +35,7 @@ Usuario realiza una operación de registro, edición o actualización de informa
 Ocurre un error durante el guardado o modificación de los datos  
 
 **Respuesta esperada:**  
+
 - El sistema evita almacenar información parcial o incompleta  
 - Los datos permanecen en un estado consistente después del fallo  
 - La operación fallida no deja registros corruptos ni relaciones incompletas  

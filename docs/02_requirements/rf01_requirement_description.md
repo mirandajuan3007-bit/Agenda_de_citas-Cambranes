@@ -1,33 +1,33 @@
 # RF-1 Creacion de citas
 
 ## Descripcion
+
 El sistema debe permitir a la secretaria registrar una nueva cita para un paciente dentro de la agenda. Durante la creacion, el sistema debe verificar que los recursos necesarios esten disponibles (paciente, terapeuta y sala) para evitar conflictos de horario. El sistema debe permitir dos tipos de registro: "Cita de terapia" o "Evaluacion inicial". Dependiendo del tipo, los pasos y la informacion requerida cambian ligeramente.
 
 *La cita tiene dos tipos de registro.*
 
-**Informacion que se registra en Evaluacion inicial**
+**Informacion que se registra en Evaluacion inicial:**
 
-- nombre(s) 
+- nombre(s)
 - apellidos  
 - telefono
-- correo 
-- terapeuta 
-- fecha 
+- correo
+- terapeuta
+- fecha
 - hora de inicio
 - duracion
-- sala 
+- sala
 - comentarios (detalles especificos del paciente, de la cita o del terapeuta)
 
-
-**Informacion que se registra en Cita de terapia**
+**Informacion que se registra en Cita de terapia:**
 
 - paciente (dado que ya se registro con anterioridad, se elige de una lista, ya que esta en la base de datos)
 - folio (se genera automaticamente)
 - terapeuta
-- fecha 
+- fecha
 - hora de inicio
 - duracion
-- sala 
+- sala
 - comprobante de pago (se cobra despues de la primera sesion)
 - cuota
 - comentarios (detalles especificos del paciente, de la cita o del terapeuta)
@@ -51,7 +51,7 @@ al crear la primera cita, la informacion del paciente se guarda en el expediente
 
 **La lógica de negocio define las reglas que el sistema debe cumplir.**
 
-**Reglas principales**
+**Reglas principales:**
 
 1) Un terapeuta no puede tener dos citas al mismo tiempo.
 
@@ -63,14 +63,10 @@ al crear la primera cita, la informacion del paciente se guarda en el expediente
 
 5) La cita debe crearse con estado: programada.
 
-6) un paciente solo puede tener 3 citas en estado pendiente es decir que no se han completado a la vez 
-
+6) un paciente solo puede tener 3 citas en estado pendiente es decir que no se han completado a la vez
 
 ## Como se veria en el frontend
 
 ![Diagrama de flujo del requisito](../03_modeling/rf01_flow_diagram.png)
 
 ![Prototipo de interfaz](../../prototypes/rf01_frontend_prototype.png)
-
-
-

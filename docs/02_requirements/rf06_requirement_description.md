@@ -1,13 +1,14 @@
 # RF-6 Consultar detalles de una cita
 
 ## Descripcion
+
 El sistema debe permitir al personal administrativo consultar la informacion detallada de una cita registrada dentro de la agenda. La consulta debe poder realizarse al seleccionar una cita desde el calendario o desde el listado de citas.
 
 Al momento de consultar una cita, el sistema debe mostrar la informacion completa asociada a esa cita para que la secretaria o el personal administrativo pueda revisarla sin necesidad de acceder a otros modulos del sistema.
 
 *La consulta puede realizarse desde el calendario o desde el listado de citas.*
 
-**Informacion que se muestra al consultar una cita**
+**Informacion que se muestra al consultar una cita:**
 
 - paciente asociado
 - sala asignada
@@ -18,7 +19,6 @@ Al momento de consultar una cita, el sistema debe mostrar la informacion complet
 
 Si la cita existe en el sistema, sus detalles deben visualizarse correctamente en la interfaz.  
 Si la cita no existe o no esta disponible, el sistema debe mostrar un mensaje de error.
-
 
 ## Relacion con otros requisitos
 
@@ -51,7 +51,7 @@ antes de cancelar una cita, el personal puede consultar sus detalles para confir
 
 **La logica de negocio define las reglas que el sistema debe cumplir.**
 
-**Reglas principales**
+**Reglas principales:**
 
 1️⃣ Solo se pueden consultar citas previamente registradas en el sistema.
 
