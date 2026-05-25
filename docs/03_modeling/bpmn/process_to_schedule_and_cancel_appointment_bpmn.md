@@ -47,7 +47,7 @@ Cada validación es una **decisión** (rombo). La salida **"sí"** continúa el 
 
 ![Diagrama de actividades — Agendar cita](appointment_scheduling_process_bpmn.png)
 
-> Fuente editable: [`proceso_agendar.puml`](appointment_scheduling_process_bpmn.puml)
+> Fuente editable: [`appointment_scheduling_process_bpmn.puml`](appointment_scheduling_process_bpmn.puml)
 
 ### Lectura del proceso (Agendar)
 
@@ -73,7 +73,7 @@ Cada validación es una **decisión** (rombo). La salida **"sí"** continúa el 
 
 ![Diagrama de actividades — Cancelar cita](appointment_cancellation_process_bpmn.png)
 
-> Fuente editable: [`proceso_cancelar.puml`](appointment_cancellation_process_bpmn.puml)
+> Fuente editable: [`appointment_cancellation_process_bpmn.puml`](appointment_cancellation_process_bpmn.puml)
 
 ### Lectura del proceso (Cancelar)
 
