@@ -1,9 +1,5 @@
 # ADR-001 — Arquitectura objetivo del módulo de agenda
 
-- **Estado:** Aceptada
-- **Fecha:** 2026-05-24
-- **Ámbito:** Diseño (no decide implementación; documenta la intención de diseño ya implícita en los artefactos del proyecto)
-
 ---
 
 ## Contexto
