@@ -1,6 +1,7 @@
 # RF-03 Validar disponibilidad de recursos
 
 ## Descripcion
+
 El sistema debe validar automaticamente la disponibilidad de los recursos necesarios antes de registrar una nueva cita o reprogramar una cita existente dentro del modulo de agenda.
 
 La validacion debe realizarse sobre los siguientes recursos:
@@ -15,7 +16,7 @@ Si existe conflicto, el sistema debe impedir la operacion y mostrar un mensaje d
 
 *La validacion debe ejecutarse tanto en el flujo de creacion de cita como en el flujo de reprogramacion.*
 
-**Acciones que realiza el sistema al validar disponibilidad**
+**Acciones que realiza el sistema al validar disponibilidad:**
 
 - recibe los datos de la cita o de la reprogramacion
 - verifica disponibilidad del terapeuta en el horario seleccionado
@@ -52,7 +53,7 @@ cuando una cita se cancela, los recursos asociados vuelven a quedar disponibles 
 
 **La logica de negocio define las reglas que el sistema debe cumplir.**
 
-**Reglas principales**
+**Reglas principales:**
 
 1.-Antes de registrar una cita nueva, el sistema debe validar la disponibilidad del terapeuta, la sala y el paciente.
 
@@ -83,4 +84,3 @@ Si existe conflicto, el sistema muestra un mensaje de error visible en la interf
 El mensaje puede presentarse cerca del formulario, en una alerta o en un cuadro de validacion, dependiendo del diseno de la interfaz.
 
 <img width="2232" height="2847" alt="Diagrama de flujo" src="https://github.com/user-attachments/assets/156ff282-49ff-4373-a1e5-8bb0cf4420c1" />
-

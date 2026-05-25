@@ -1,0 +1,55 @@
+@startuml appointment_scheduling_process_bpmn
+' Diagrama de actividades con carriles (swimlanes) — nivel de diseño
+' Proceso de negocio: Agendar cita (RF-01 · RF-02 · RF-03 · RF-05)
+' Render: java -jar plantuml.jar -charset UTF-8 -tpng proceso_agendar.puml
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam ArrowColor #546E7A
+skinparam ArrowFontColor #37474F
+skinparam ActivityBorderColor #1565C0
+skinparam ActivityBackgroundColor #E3F2FD
+skinparam ActivityDiamondBorderColor #F9A825
+skinparam ActivityDiamondBackgroundColor #FFF8E1
+skinparam swimlaneTitleFontStyle bold
+skinparam swimlaneBorderColor #B0BEC5
+
+title Proceso de negocio: Agendar cita (RF-01 · RF-02 · RF-03 · RF-05)
+
+|#ECEFF1|Secretaría|
+start
+:Iniciar registro de cita;
+if (¿Tipo de sesión?) then (Evaluación inicial)
+  :Capturar paciente nuevo\ny generar folio;
+else (Sesión terapéutica)
+  :Seleccionar paciente existente;
+endif
+:Indicar terapeuta, sala,\nfecha, hora y duración;
+:Revisar resumen previo (RF-02);
+:Confirmar cita;
+
+|#E8F5E9|Módulo de Agenda|
+if (¿Datos completos y válidos?) then (no)
+  :Rechazo: datos incompletos\no inválidos;<<#FFCDD2>>
+  stop
+else (sí)
+endif
+if (¿La sala corresponde\nal terapeuta?) then (no)
+  :Rechazo: la sala no\ncorresponde al terapeuta;<<#FFCDD2>>
+  stop
+else (sí)
+endif
+:Validar disponibilidad\n(1) horario laboral L-V 09:00-17:30\n(2) sin solape de terapeuta/sala/paciente\n(3) máx. 3 citas activas;
+if (¿Cumple disponibilidad?) then (no)
+  :Rechazo: conflicto\nde disponibilidad (con detalle);<<#FFCDD2>>
+  stop
+else (sí)
+endif
+:Crear cita con estado 'Programada';<<#C8E6C9>>
+:Registrar en historial del paciente (RF-05);
+:Registrar acción en auditoría;
+
+|#ECEFF1|Secretaría|
+:Ver confirmación:\ncita registrada y visible en agenda;
+stop
+@enduml

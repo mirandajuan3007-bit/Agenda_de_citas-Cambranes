@@ -149,7 +149,7 @@ Se considera que este requisito se cumple cuando:
 
 Las siguientes referencias visuales pueden utilizarse como evidencia de que la interfaz del módulo debe limitar la información visible según la vista y según el actor que consulta la información. Aunque estas imágenes provienen de prototipos asociados a otros flujos del módulo, sirven como respaldo visual del criterio de exposición mínima dentro de la agenda.
 
-| Evidencia | Qué respalda dentro del RNF-06 |
+| Evidencia | Qué respalda dentro del RNF-05 |
 | --- | --- |
 | Detalle de la cita | Permite verificar que la vista de detalle muestra información administrativa de la cita y no un expediente clínico completo. |
 | Agenda general | Permite verificar que la agenda muestra información resumida para localizar citas rápidamente sin exponer datos sensibles. |

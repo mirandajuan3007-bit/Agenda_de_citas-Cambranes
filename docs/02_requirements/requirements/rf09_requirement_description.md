@@ -1,6 +1,7 @@
 # RF-09 Cancelar Citas con Anticipacion y Actualizar la Agenda
 
 ## Descripcion
+
 El sistema debe permitir a la secretaria cancelar una cita previamente registrada antes de su fecha programada. Durante la cancelacion, el sistema debe actualizar automaticamente la agenda para reflejar que ese espacio queda disponible nuevamente.
 
 Ademas, la cancelacion debe quedar registrada para mantener trazabilidad sobre la accion realizada, incluyendo la informacion relevante de la cita y del usuario que realizo la cancelacion.

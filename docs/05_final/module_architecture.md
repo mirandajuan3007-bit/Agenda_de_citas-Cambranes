@@ -52,6 +52,7 @@ Reglas de dependencia (de afuera hacia adentro, jamas al reves):
 ## 2. Componentes clave por capa
 
 ### api/
+
 - `AppointmentController`, `PatientController`, `AuthController`, `CatalogController`.
 - `dto/` — records inmutables que definen el contrato HTTP.
 - `mapper/DtoMapper` — convierte entidad ↔ DTO en un solo lugar.
@@ -59,12 +60,14 @@ Reglas de dependencia (de afuera hacia adentro, jamas al reves):
 - `security/CurrentUserArgumentResolver` — adapter de `X-User-Id` a `User`.
 
 ### service/
+
 - `AppointmentService` — casos de uso de cita (crear, cancelar, completar, reprogramar).
 - `PatientService` — alta y busqueda de pacientes.
 - `AuthService` — login con BCrypt.
 - `CatalogService` — terapeutas, salas, tipos de sesion, estados.
 
 ### domain/
+
 - `model/` — Appointment (Aggregate Root), Patient, Therapist, Room, User, AppointmentStatus, AuditLog.
 - `repository/` — interfaces JPA con queries especificas (`findOverlapping`, `countScheduledByPatient`).
 - `validation/` — `AppointmentValidator` (Strategy) + `AppointmentValidationChain` (Chain) + 3 reglas.
@@ -144,7 +147,7 @@ Cambiarlos no requiere recompilar. Esto refleja el principio de **configuracion 
 
 ## 6. Que mejorar en el futuro
 
-Ver `docs/05_final/analisis_diseño.md` seccion 6. Los temas principales son:
+Ver `docs/05_final/design_analysis.md` seccion 6. Los temas principales son:
 
 - Autenticacion real (JWT) — el `X-User-Id` actual es demo.
 - Tests unitarios + integracion (JUnit + Testcontainers).

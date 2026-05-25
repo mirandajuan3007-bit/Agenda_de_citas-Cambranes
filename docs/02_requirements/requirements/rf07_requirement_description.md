@@ -62,7 +62,7 @@ Esto permite que el usuario interprete rapidamente que la cita requiere revision
 
 **La logica de negocio define las reglas que el sistema debe cumplir.**
 
-**Reglas principales**
+**Reglas principales:**
 
 1. Solo puede marcarse visualmente como atrasada una cita existente y previamente registrada en la agenda.
 
@@ -96,4 +96,3 @@ Esto permite que el usuario interprete rapidamente que la cita requiere revision
 En el calendario o en el listado principal de citas, aquellas que ya sobrepasaron su hora de inicio y siguen pendientes de atencion deben mostrarse con un estilo visual distinto, por ejemplo color rojo, borde resaltado o icono de advertencia.
 
 Al seleccionar una de estas citas, la secretaria puede revisar el detalle y decidir si debe consultarla, reprogramarla o cancelarla segun corresponda.
-

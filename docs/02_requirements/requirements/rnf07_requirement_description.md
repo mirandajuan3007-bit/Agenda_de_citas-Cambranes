@@ -70,18 +70,18 @@ Verificación: Esto se validará con una prueba de recorrido sobre el prototipo 
 
 ## Relación con otros RNF
 
-**RNF-06 — Usabilidad y coherencia visual**
+**RNF-06 — Usabilidad y coherencia visual:**
 
 - La guía de estilo y consistencia visual son condición necesaria para que los flujos sean predecibles.
 
-**RNF-08 — Formularios y validaciones claras**
+**RNF-08 — Formularios y validaciones claras:**
 
 - Los formularios dentro de los flujos deben respetar la agrupación lógica y el orden natural definidos en RNF-08.
 
-**RNF-09 — Mensajes y retroalimentación al usuario**
+**RNF-09 — Mensajes y retroalimentación al usuario:**
 
 - Los mensajes de confirmación y error forman parte del flujo y deben integrarse sin interrumpirlo.
 
-**RNF-10 — Compatibilidad escritorio y zoom**
+**RNF-10 — Compatibilidad escritorio y zoom:**
 
 - La visibilidad de acciones principales depende del comportamiento correcto en resoluciones y niveles de zoom definidos en RNF-10.

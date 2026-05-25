@@ -23,6 +23,7 @@ Este RNF pertenece a la categoría de **Usabilidad**, ya que su finalidad es mej
 ### Requisitos relacionados del backlog
 
 #### Requisitos funcionales relacionados
+
 - **RF-03. Validar disponibilidad de recursos**
 - **RF-04. Generación automática de ID de paciente**
 - **RF-06. Consultar detalles de una cita**
@@ -30,12 +31,13 @@ Este RNF pertenece a la categoría de **Usabilidad**, ya que su finalidad es mej
 - **RF-09. Cancelar citas con anticipación y actualizar la agenda**
 
 #### Requisitos no funcionales relacionados
-- **RNF-07. Usabilidad y diseño coherente**
-- **RNF-01. Protección contra edición incompleta**
-- **RNF-02. Control de acceso básico y privacidad en UI**
-- **RNF-06. Minimización de exposición de datos**
 
-Este RNF complementa especialmente a **RNF-07**, ya que aterriza la usabilidad al caso específico de los formularios del módulo de citas.
+- **RNF-06. Usabilidad y diseño coherente**
+- **RNF-01. Consistencia e integridad transaccional**
+- **RNF-02. Control de acceso básico y privacidad en UI**
+- **RNF-05. Minimización de exposición de datos**
+
+Este RNF complementa especialmente a **RNF-06**, ya que aterriza la usabilidad al caso específico de los formularios del módulo de citas.
 
 ---
 
@@ -236,4 +238,4 @@ El issue **RNF-08. Claridad y organización de formularios** podrá considerarse
 
 Este documento funciona como **entregable base** del RNF.
 
-Su objetivo es dejar claro **qué debe existir en el proyecto para demostrar que este requisito fue trabajado**, cómo se verificará su cumplimiento y qué evidencias permitirán validarlo en etapas posteriores.
+Su objetivo es dejar claro **qué debe existir en el proyecto para demostrar que este requisito fue trabajado**, cómo se verificará su cumplimiento y qué evidencias permitirán validarlo en etapas posteriores

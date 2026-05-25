@@ -1,0 +1,49 @@
+@startuml appointment_cancellation_process_bpmn
+' Diagrama de actividades con carriles (swimlanes) — nivel de diseño
+' Proceso de negocio: Cancelar cita (RF-09)
+' Render: java -jar plantuml.jar -charset UTF-8 -tpng proceso_cancelar.puml
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam ArrowColor #546E7A
+skinparam ArrowFontColor #37474F
+skinparam ActivityBorderColor #1565C0
+skinparam ActivityBackgroundColor #E3F2FD
+skinparam ActivityDiamondBorderColor #F9A825
+skinparam ActivityDiamondBackgroundColor #FFF8E1
+skinparam swimlaneTitleFontStyle bold
+skinparam swimlaneBorderColor #B0BEC5
+
+title Proceso de negocio: Cancelar cita (RF-09)
+
+|#ECEFF1|Secretaría|
+start
+:Seleccionar cita en la agenda;
+:Consultar detalle de la cita (RF-06);
+:Ingresar motivo de cancelación;
+:Confirmar cancelación;
+
+|#E8F5E9|Módulo de Agenda|
+if (¿La cita existe?) then (no)
+  :Rechazo: cita no encontrada;<<#FFCDD2>>
+  stop
+else (sí)
+endif
+if (¿El estado permite cancelar?\nsolo 'Programada') then (no)
+  :Rechazo: el estado actual\nno permite cancelación;<<#FFCDD2>>
+  stop
+else (sí)
+endif
+if (¿Se cancela antes de\nla hora de inicio?) then (no)
+  :Rechazo: no se puede cancelar\nuna cita que ya inició;<<#FFCDD2>>
+  stop
+else (sí)
+endif
+:Cambiar estado a 'Cancelada'\nregistrar motivo, fecha y usuario;<<#C8E6C9>>
+:Liberar el horario\n(queda disponible);
+:Registrar acción en auditoría;
+
+|#ECEFF1|Secretaría|
+:Ver confirmación:\ncita cancelada, horario liberado;
+stop
+@enduml

@@ -1,6 +1,7 @@
 # RNF-02. Control de acceso básico y privacidad en UI
 
 ## Descripción
+
 El sistema deberá implementar un mecanismo de acceso básico en la interfaz que permita identificar al usuario mediante correo o nombre de usuario y contraseña.
 
 Cada usuario tendrá un rol predefinido (secretaria o coordinador), el cual determinará las vistas, módulos y acciones que podrá visualizar y ejecutar dentro del sistema.
@@ -14,11 +15,13 @@ El alcance de este requisito se limita al control de acceso en frontend, sin con
 ---
 
 ## Categoría
+
 Seguridad (control de acceso) y privacidad de datos
 
 ---
 
 ## Objetivo del requisito
+
 Implementar control de acceso básico basado en roles y reducir la exposición de información sensible en la interfaz del sistema.
 
 ---
@@ -32,6 +35,7 @@ Usuario accede al sistema web de la clínica
 El usuario intenta iniciar sesión o acceder a una vista del sistema  
 
 **Respuesta esperada:**  
+
 - Si las credenciales son correctas, el sistema permite el acceso  
 - El sistema muestra únicamente las vistas y acciones correspondientes al rol del usuario  
 - Si no hay sesión activa, el acceso a las pantallas principales es bloqueado  
@@ -78,4 +82,4 @@ No presenta contradicciones con otros requisitos del sistema.
 - El 100% de las rutas protegidas requieren sesión activa  
 - El 100% de los usuarios visualizan únicamente módulos permitidos por su rol  
 - No se muestra información sensible innecesaria en listados y búsquedas  
-- El sistema redirige correctamente al login al cerrar sesión  
+- El sistema redirige correctamente al login al cerrar sesión 

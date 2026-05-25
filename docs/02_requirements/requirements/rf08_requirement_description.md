@@ -6,11 +6,11 @@ El requisito funcional de reprogramar una cita permite al personal administrativ
 
 ## Relacion con otros requisitos
 
-- **RF-6 (Consultar cita)**
+- **RF-06 (Consultar cita)**
 Es el paso previo obligatorio, ya que la secretaria necesita seleccionar y ver la cita actual antes de decidir reprogramar.
-- **RF-3 (Validar disponibilidad)**
+- **RF-03 (Validar disponibilidad)**
 Al elegir la nueva fecha y hora, el sistema debe consumir este RF para asegurar que no haya conflictos de agenda.
-- **RF-1 (Crear cita)**
+- **RF-01 (Crear cita)**
 Dado que la regla de negocio dicta que la cita original se archiva y se crea una nueva, el proceso de reprogramacion reutiliza internamente la logica de creacion de citas.
 
 ## Lógica de negocio
